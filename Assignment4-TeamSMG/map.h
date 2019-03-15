@@ -38,7 +38,7 @@ public:
 
 private:
 	struct Pair{
-		Hashable* key;
+		int key;
 		T* value;
 	};
 
@@ -73,7 +73,7 @@ public:
 	Get the value stored in this Map that is paired with given key.
 	Returns NULL if no such value is found.
 	*/
-	T* get(const Hashable* key) const;
+	T* get(const Hashable& key) const;
 
 	/*
 	Store the value paired with given key.
@@ -81,19 +81,19 @@ public:
 	replaced with new value.
 	Returns previous value if replaced or NULL if it's new value.
 	*/
-	T* put(const Hashable* key, const T* value);
+	T* put(const Hashable& key, const T* value);
 
 	/*
 	Check if given key exist in this Map.
 	Returns true if exists, false otherwise.
 	*/
-	bool containsKey(const Hashable* key) const;
+	bool containsKey(const Hashable& key) const;
 
 	/*
 	Remove the value paired with the given key.
 	Returns true if removed, false if not exist.
 	*/
-	bool remove(const Hashable* key);
+	bool remove(const Hashable& key);
 };
 
 template<class T>
@@ -149,25 +149,25 @@ int Map<T>::get_max_size() const
 }
 
 template<class T>
-T* Map<T>::get(const Hashable* key) const
+T* Map<T>::get(const Hashable& key) const
 {
 	return NULL;
 }
 
 template<class T>
-T* Map<T>::put(const Hashable* key, const T* value)
+T* Map<T>::put(const Hashable& key, const T* value)
 {
 	return NULL;
 }
 
 template<class T>
-bool Map<T>::containsKey(const Hashable* key) const
+bool Map<T>::containsKey(const Hashable& key) const
 {
 	return false;
 }
 
 template<class T>
-bool Map<T>::remove(const Hashable* key)
+bool Map<T>::remove(const Hashable& key)
 {
 	return false;
 }
