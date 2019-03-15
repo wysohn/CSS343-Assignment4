@@ -39,9 +39,18 @@ public:
 
 private:
 	struct Pair{
+		/*
+		This becomes true to mark the value deleted
+		*/
 		bool deleted;
 
+		/*
+		This is original hash code not yet moded
+		*/
 		int key;
+		/*
+		Actual value saved
+		*/
 		T* value;
 	};
 
@@ -54,6 +63,11 @@ private:
 	previous contents to the newly allocated memory.
 	*/
 	void rehash();
+
+	/*
+	Attempt to get the pair associated with given key.
+	*/
+	void find_pair(const Hashable& key);
 
 public:
 	Map();
@@ -125,6 +139,36 @@ void Map<T>::rehash()
 }
 
 template<class T>
+inline void Map<T>::find_pair(const Hashable & key)
+{
+	Pair* pair = NULL;
+
+	//check if count is less than the max_size, so iteration doesn't go cyclic
+	int count = 0;
+	for (; count < this->max_size; count++) {
+		//get pair at (hash + count) % max
+		pair = this->buckets[(key.hashCode() + count) % this->max_size];
+
+		//skip if deleted recently
+		if (key.deleted) {
+			continue;
+		}
+
+		//if the pair is what we are looking for, stop iteration.
+		if (key.equals(*pair->value)) {
+			break;
+		}
+	}
+
+	//if count is same as max_size, we couldn't find the value.
+	if (count == this->max_size) {
+		return NULL;
+	}
+
+	return pair->value;
+}
+
+template<class T>
 Map<T>::Map() : current_capacity(0), max_size(8)
 {
 	//max_size start from 8, so that constructor
@@ -154,32 +198,11 @@ int Map<T>::get_max_size() const
 template<class T>
 T* Map<T>::get(const Hashable& key) const
 {
-	///fit hash value
+	//fit hash value
 	int hash = key.hashCode() % this->max_size;
 
-	///retrive appropriate value
-	Pair* pair = NULL;
-	//check if count is less than the max_size, so iteration doesn't go cyclic
-	int count = 0;
-	for (; count < this->max_size; count++) {
-		//get pair at (hash + count) % max
-		pair = this->buckets[(hash + count) % this->max_size];
-
-		//skip if deleted recently
-		if (key.deleted) {
-			continue;
-		}
-
-		//if the pair is what we are looking for, stop iteration.
-		if (key.equals(*pair->value)) {
-			break;
-		}
-	}
-
-	//if count is same as max_size, we couldn't find the value.
-	if (count == this->max_size) {
-		return NULL;
-	}
+	//retrive appropriate value
+	Pair* pair = find_pair(key);
 
 	//return the value of found pair
 	return pair->value;
@@ -188,7 +211,25 @@ T* Map<T>::get(const Hashable& key) const
 template<class T>
 T* Map<T>::put(const Hashable& key, const T* value)
 {
-	return NULL;
+	//fit hash value
+	int hash_original = key.hashCode();
+	int hash = hash_original % this->max_size;
+
+	//retrive appropriate value if exist
+	Pair* pair = find_pair(key);
+
+	//create new pair if not exist
+	if (pair == NULL) {
+		pair = new Pair();
+		pair->key = hash_original;
+	}
+
+	//store new value or replace
+	T* prev = pair->value;
+	pair->value = value;
+
+	//return the previous value
+	return prev;
 }
 
 template<class T>
