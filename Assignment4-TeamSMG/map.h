@@ -149,8 +149,8 @@ inline void Map<T>::find_pair(const Hashable & key)
 		//get pair at (hash + count) % max
 		pair = this->buckets[(key.hashCode() + count) % this->max_size];
 
-		//skip if deleted recently
-		if (key.deleted) {
+		//skip if NULL or deleted recently
+		if (pair == NULL || pair.deleted) {
 			continue;
 		}
 
