@@ -133,7 +133,7 @@ Map<T>::Map() : current_capacity(0), max_size(8)
 template<class T>
 Map<T>::~Map()
 {
-
+	delete[] this->buckets;
 }
 
 template<class T>
