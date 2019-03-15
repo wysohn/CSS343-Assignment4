@@ -235,11 +235,26 @@ T* Map<T>::put(const Hashable& key, const T* value)
 template<class T>
 bool Map<T>::containsKey(const Hashable& key) const
 {
-	return false;
+	//retrive appropriate value if exist
+	Pair* pair = find_pair(key);
+
+	//true if not NULL and not marked as deleted
+	return pair != NULL && !pair.deleted;
 }
 
 template<class T>
 bool Map<T>::remove(const Hashable& key)
 {
-	return false;
+	//retrive appropriate value if exist
+	Pair* pair = find_pair(key);
+
+	//nothing to delete if not exist or already deleted
+	if (pair == NULL || pair.deleted) {
+		return false;
+	}
+
+	//simply mark as deleted
+	pair.deleted = true;
+
+	return true;
 }
