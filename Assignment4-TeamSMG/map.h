@@ -8,7 +8,8 @@
 /*
 A Map is a storage, which stores values by pairing them with corresponding keys.
 The keys must be Map::Hashable, and it implies that the keys are stored
-in hashtable. Access to any value is thereby guaranteed to be O(1).
+in hashtable. Access to any value is thereby guaranteed to be O(1). Collision
+policy of this Map is closed, linear probing.
 */
 template <class T>
 class Map
@@ -38,6 +39,8 @@ public:
 
 private:
 	struct Pair{
+		bool deleted;
+
 		int key;
 		T* value;
 	};
@@ -151,7 +154,35 @@ int Map<T>::get_max_size() const
 template<class T>
 T* Map<T>::get(const Hashable& key) const
 {
-	return NULL;
+	///fit hash value
+	int hash = key.hashCode() % this->max_size;
+
+	///retrive appropriate value
+	Pair* pair = NULL;
+	//check if count is less than the max_size, so iteration doesn't go cyclic
+	int count = 0;
+	for (; count < this->max_size; count++) {
+		//get pair at (hash + count) % max
+		pair = this->buckets[(hash + count) % this->max_size];
+
+		//skip if deleted recently
+		if (key.deleted) {
+			continue;
+		}
+
+		//if the pair is what we are looking for, stop iteration.
+		if (key.equals(*pair->value)) {
+			break;
+		}
+	}
+
+	//if count is same as max_size, we couldn't find the value.
+	if (count == this->max_size) {
+		return NULL;
+	}
+
+	//return the value of found pair
+	return pair->value;
 }
 
 template<class T>
