@@ -16,7 +16,9 @@ Inventory Tracking System (ITS) is a system which is separated into two parts: t
 
 * `DatabaseCustomer<CustomerKey, CustomerInfo>`-This class acts as a database for all customers interacting with the movie stock.Customers are stored based on their distinct ID number using CustomerKey, andthe corresponding CustomerInfo identifies them by first and last name. Thisnumber acts as the key value to be search, if necessary.
 
-* `DatabaseTransaction<CustomerKey, std::queue<std::string>>`-This class acts as a database for all transactions which occur on the movie stockcontents. Transactions are held within a queue structure, as the transactionhistory should be available in the order of occurrence. The key for searching willbe the CustomerKey, the ID number of the customer whose history is beingsearched, and the value will be a queue containing the transaction history of saidcustomer.Data Classes
+* `DatabaseTransaction<CustomerKey, std::queue<std::string>>`-This class acts as a database for all transactions which occur on the movie stockcontents. Transactions are held within a queue structure, as the transactionhistory should be available in the order of occurrence. The key for searching willbe the CustomerKey, the ID number of the customer whose history is beingsearched, and the value will be a queue containing the transaction history of saidcustomer.
+
+## Data Classes
 
 * `Hashable` - An interface that represent any class that can be ‘hashed.’ Since this is aninterface, the children classes must implement their own hashCode() and
 TeamSMGJeremiah Griffith, Tony Moon, Wooyoung Sonequals() method in order to make themselves as ‘hashable’ object. ThehashCode() produce the integer value that is as unique as possible, and theequals() method will be used for probing the hashtable when there are more thanone distinctive value, which are stored in linked list, exist for one hash valueexists.
