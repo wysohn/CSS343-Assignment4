@@ -23,6 +23,7 @@ public:
 	stored in the bucket (as linked-list), so it can search for the exact instance.
 	*/
 	class Hashable {
+	public:
 		/*
 		The hash value of this instance. More the unique this value is, then
 		less collision will occur.
@@ -34,7 +35,7 @@ public:
 		This will be used when there are multiple Hashables with same hash value
 		(a.k.a collision).
 		*/
-		virtual bool equals(const Hashable& other) const = 0;
+		virtual bool equals(const Hashable* other) const = 0;
 	};
 
 private:
@@ -45,9 +46,9 @@ private:
 		bool deleted;
 
 		/*
-		This is original hash code not yet moded
+		The key, which is Hashable
 		*/
-		int key;
+		const Hashable* key;
 		/*
 		Actual value saved
 		*/
@@ -56,7 +57,7 @@ private:
 
 	int current_capacity;
 	int max_size;
-	Pair* buckets;
+	Pair** buckets;
 
 	/*
 	Twice the max_size of hash table and move
@@ -65,9 +66,14 @@ private:
 	void rehash();
 
 	/*
+	Clear everything in the given bucket.
+	*/
+	void clear(Pair** bucket, int size);
+
+	/*
 	Attempt to get the pair associated with given key.
 	*/
-	void find_pair(const Hashable& key);
+	Pair* find_pair(const Hashable* key) const;
 
 public:
 	Map();
@@ -90,7 +96,7 @@ public:
 	Get the value stored in this Map that is paired with given key.
 	Returns NULL if no such value is found.
 	*/
-	T* get(const Hashable& key) const;
+	T* get(const Hashable* key) const;
 
 	/*
 	Store the value paired with given key.
@@ -98,64 +104,83 @@ public:
 	replaced with new value.
 	Returns previous value if replaced or NULL if it's new value.
 	*/
-	T* put(const Hashable& key, const T* value);
+	T* put(const Hashable* key, T* value);
 
 	/*
 	Check if given key exist in this Map.
 	Returns true if exists, false otherwise.
 	*/
-	bool containsKey(const Hashable& key) const;
+	bool containsKey(const Hashable* key) const;
 
 	/*
 	Remove the value paired with the given key.
+	Note that removing the element simply mark the bucket
+	as 'deleted,' not actually emptying the bucket, so
+	the capacity of map does not change after remove()
+	is called or not.
 	Returns true if removed, false if not exist.
 	*/
-	bool remove(const Hashable& key);
+	bool remove(const Hashable* key);
 };
 
 template<class T>
-void Map<T>::rehash()
+inline void Map<T>::rehash()
 {
 	//temporarily store previous data
-	Pair* temp = this->buckets;
+	Pair** temp = this->buckets;
 	int prev_max = this->max_size;
 
 	//resize the buckets
 	this->max_size *= 2;
-	this->buckets = new Pair[this->max_size];
+	this->buckets = new Pair*[this->max_size]{NULL, };
 
 	//copy previous data if exist
 	if (temp != NULL) {
 		for (int i = 0; i < prev_max; i++) {
-			if (temp+i != NULL) {
-				put((temp+i)->key, (temp+i)->value);
+			if (temp[i] != NULL) {
+				put((temp[i])->key, (temp[i])->value);
 			}
 		}
 
 		//delete previous
-		delete[] temp;
+		clear(temp, prev_max);
 	}
 
 }
 
 template<class T>
-inline void Map<T>::find_pair(const Hashable & key)
+inline void Map<T>::clear(Pair** bucket, int size)
 {
+	//delete each bucket
+	for (int i = 0; i < size; i++) {
+		if(bucket[i])
+			delete bucket[i];
+	}
+
+	//delete the bucket array
+	delete[] bucket;
+}
+
+template<class T>
+inline typename Map<T>::Pair* Map<T>::find_pair(const Hashable* key) const
+{
+	int hash = key->hashCode() % this->max_size;
+
 	Pair* pair = NULL;
 
 	//check if count is less than the max_size, so iteration doesn't go cyclic
 	int count = 0;
 	for (; count < this->max_size; count++) {
 		//get pair at (hash + count) % max
-		pair = this->buckets[(key.hashCode() + count) % this->max_size];
+		pair = this->buckets[(hash + count) % this->max_size];
 
 		//skip if NULL or deleted recently
-		if (pair == NULL || pair.deleted) {
+		if (pair == NULL || pair->deleted) {
 			continue;
 		}
 
 		//if the pair is what we are looking for, stop iteration.
-		if (key.equals(*pair->value)) {
+		if (key->equals(pair->key)) {
 			break;
 		}
 	}
@@ -165,11 +190,11 @@ inline void Map<T>::find_pair(const Hashable & key)
 		return NULL;
 	}
 
-	return pair->value;
+	return pair;
 }
 
 template<class T>
-Map<T>::Map() : current_capacity(0), max_size(8)
+Map<T>::Map() : current_capacity(0), max_size(8), buckets(NULL)
 {
 	//max_size start from 8, so that constructor
 	//expand the buckets to 16, which is commonly
@@ -180,7 +205,7 @@ Map<T>::Map() : current_capacity(0), max_size(8)
 template<class T>
 Map<T>::~Map()
 {
-	delete[] this->buckets;
+	this->clear(this->buckets, this->max_size);
 }
 
 template<class T>
@@ -196,7 +221,7 @@ int Map<T>::get_max_size() const
 }
 
 template<class T>
-T* Map<T>::get(const Hashable& key) const
+T* Map<T>::get(const Hashable* key) const
 {
 	//retrive appropriate value
 	Pair* pair = find_pair(key);
@@ -206,48 +231,80 @@ T* Map<T>::get(const Hashable& key) const
 }
 
 template<class T>
-T* Map<T>::put(const Hashable& key, const T* value)
+T* Map<T>::put(const Hashable* key, T* value)
 {
-	//retrive appropriate value if exist
-	Pair* pair = find_pair(key);
+	//retrive previous pair
+	Pair* prev_pair = find_pair(key);
 
 	//create new pair if not exist
-	if (pair == NULL) {
-		pair = new Pair();
-		pair->key = key.hashCode();
+	if (prev_pair == NULL) {
+		//check if rehashing is required
+		if (CURRENT_LOAD(this->current_capacity) > this->current_capacity) {
+			this->rehash();
+		}
+
+		int hash = key->hashCode() % this->max_size;
+		int index = -1;
+
+		//iterate all buckets at least once until finding empty bucket
+		int count = 0;
+		for (; count < this->max_size; count++) {
+			//keep move forward until find an empty bucket
+			index = (hash + count) % this->max_size;
+			if (this->buckets[index] == NULL) {
+				break;
+			}
+		}
+
+		//coudln't find empty bucket. something went wrong
+		if (count == this->max_size) {
+			throw;
+		}
+
+		//create new pair
+		Pair* bucket = new Pair();
+		bucket->key = key;
+		bucket->value = value;
+
+		//assign to bucket
+		this->buckets[index] = bucket;
+		this->current_capacity++;
+
+		return NULL;
 	}
+	//or replace
+	else {
+		T* prev = prev_pair->value;
+		prev_pair->value = value;
 
-	//store new value or replace
-	T* prev = pair->value;
-	pair->value = value;
-
-	//return the previous value
-	return prev;
+		//return the previous value
+		return prev;
+	}
 }
 
 template<class T>
-bool Map<T>::containsKey(const Hashable& key) const
+bool Map<T>::containsKey(const Hashable* key) const
 {
 	//retrive appropriate value if exist
 	Pair* pair = find_pair(key);
 
 	//true if not NULL and not marked as deleted
-	return pair != NULL && !pair.deleted;
+	return pair != NULL && !pair->deleted;
 }
 
 template<class T>
-bool Map<T>::remove(const Hashable& key)
+bool Map<T>::remove(const Hashable* key)
 {
 	//retrive appropriate value if exist
 	Pair* pair = find_pair(key);
 
 	//nothing to delete if not exist or already deleted
-	if (pair == NULL || pair.deleted) {
+	if (pair == NULL || pair->deleted) {
 		return false;
 	}
 
 	//simply mark as deleted
-	pair.deleted = true;
+	pair->deleted = true;
 
 	return true;
 }
