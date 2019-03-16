@@ -208,17 +208,13 @@ T* Map<T>::get(const Hashable& key) const
 template<class T>
 T* Map<T>::put(const Hashable& key, const T* value)
 {
-	//fit hash value
-	int hash_original = key.hashCode();
-	int hash = hash_original % this->max_size;
-
 	//retrive appropriate value if exist
 	Pair* pair = find_pair(key);
 
 	//create new pair if not exist
 	if (pair == NULL) {
 		pair = new Pair();
-		pair->key = hash_original;
+		pair->key = key.hashCode();
 	}
 
 	//store new value or replace
