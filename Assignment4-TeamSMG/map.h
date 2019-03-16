@@ -198,14 +198,11 @@ int Map<T>::get_max_size() const
 template<class T>
 T* Map<T>::get(const Hashable& key) const
 {
-	//fit hash value
-	int hash = key.hashCode() % this->max_size;
-
 	//retrive appropriate value
 	Pair* pair = find_pair(key);
 
 	//return the value of found pair
-	return pair->value;
+	return pair == NULL ? NULL : pair->value;
 }
 
 template<class T>
