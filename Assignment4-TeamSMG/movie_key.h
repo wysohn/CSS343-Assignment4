@@ -7,7 +7,7 @@
 
 class MovieKey : public Map<MovieKey>::Hashable, public Comparable 
 {
-private:
+protected:
 	std::string title;
 	int year;
 	std::string director;
