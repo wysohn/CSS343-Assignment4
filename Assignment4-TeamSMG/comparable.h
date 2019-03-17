@@ -9,6 +9,6 @@ public:
 	0 if this object is same as 'other,' and 1 if this object is larger than
 	'other.'
 	*/
-	virtual int compareTo(Comparable* other) =0;
+	virtual int compareTo(const Comparable* other) =0;
 };
 
