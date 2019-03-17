@@ -89,9 +89,7 @@ public:
 	}
 };
 
-int main() {
-	///beginning of test
-
+void test_Map() {
 	//test for Map
 	Map<int> map; //constructor test (also rehash() is executed in constructor)
 	ASSERT_EQ(0, map.get_capacity());
@@ -116,7 +114,7 @@ int main() {
 	int temp1_collision_val3 = 114;
 
 	//functional tests of methods (find_pair put get containsKey remove)
-	
+
 	//find_pair (not found)
 	Map<int>::Pair* pair = map.find_pair(&temp1);
 	ASSERT_NULL(pair);
@@ -163,7 +161,7 @@ int main() {
 
 	//get (for value deleted)
 	ASSERT_NULL(map.get(&temp1));
-	
+
 	//collision test (50, 18, 82, 114)
 	ASSERT_EQ(1, map.current_capacity);
 	ASSERT_EQ(32, map.max_size);
@@ -193,7 +191,7 @@ int main() {
 	Map<int> map2;
 	//force set max_size for test
 	//this will cause memory leak as size is changed but actual size of array is same
-	map2.max_size = 3; 
+	map2.max_size = 3;
 	// max_load = 3 * 0.75 = (int)2.25 = 2
 	// (18, 82, 114, 53) 18%3 = 0, 82%3 = 1, 114%3 = 0, 53%3 = 2
 	map2.put(&temp1_collision, &temp1_collision_val);
@@ -204,6 +202,12 @@ int main() {
 	// check
 	ASSERT_EQ(6, map2.max_size);
 	ASSERT_EQ(4, map2.current_capacity);
+}
+
+int main() {
+	///beginning of test
+
+	test_Map();
 
 	///end of test
 	
