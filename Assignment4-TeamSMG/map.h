@@ -3,7 +3,7 @@
 #include <cstddef>
 
 //when capacity of Map reaches CURRENT_LOAD, it should be rehashed.
-#define CURRENT_LOAD(current_capacity) current_capacity * 0.75
+#define CURRENT_LOAD(max_size) max_size * 0.75
 
 /*
 A Map is a storage, which stores values by pairing them with corresponding keys.
@@ -131,6 +131,7 @@ inline void Map<T>::rehash()
 	int prev_max = this->max_size;
 
 	//resize the buckets
+	this->current_capacity = 0;
 	this->max_size *= 2;
 	this->buckets = new Pair*[this->max_size]{NULL, };
 
@@ -239,7 +240,7 @@ T* Map<T>::put(const Hashable* key, T* value)
 	//create new pair if not exist
 	if (prev_pair == NULL) {
 		//check if rehashing is required
-		if (CURRENT_LOAD(this->current_capacity) > this->current_capacity) {
+		if (CURRENT_LOAD(this->max_size) < this->current_capacity) {
 			this->rehash();
 		}
 
