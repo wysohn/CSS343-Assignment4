@@ -6,6 +6,13 @@
 #define CURRENT_LOAD(max_size) max_size * 0.75
 
 /*
+return 'value' modulo 'div'.
+if 'div' is 0, it will throw exception as
+int divided by 0 is undefined.
+*/
+int modulo(int value, int div);
+
+/*
 A Map is a storage, which stores values by pairing them with corresponding keys.
 The keys must be Map::Hashable, and it implies that the keys are stored
 in hashtable. Access to any value is thereby guaranteed to be O(1). Collision
@@ -165,15 +172,15 @@ inline void Map<T>::clear(Pair** bucket, int size)
 template<class T>
 inline typename Map<T>::Pair* Map<T>::find_pair(const Hashable* key) const
 {
-	int hash = key->hashCode() % this->max_size;
+	int hash = modulo(key->hashCode(), this->max_size);
 
 	Pair* pair = NULL;
 
 	//check if count is less than the max_size, so iteration doesn't go cyclic
 	int count = 0;
 	for (; count < this->max_size; count++) {
-		//get pair at (hash + count) % max
-		pair = this->buckets[(hash + count) % this->max_size];
+		//get pair at (hash + count) mod max
+		pair = this->buckets[modulo(hash + count, this->max_size)];
 
 		//skip if NULL or deleted recently
 		if (pair == NULL || pair->deleted) {
@@ -244,14 +251,14 @@ T* Map<T>::put(const Hashable* key, T* value)
 			this->rehash();
 		}
 
-		int hash = key->hashCode() % this->max_size;
+		int hash = modulo(key->hashCode(), this->max_size);
 		int index = -1;
 
 		//iterate all buckets at least once until finding empty bucket
 		int count = 0;
 		for (; count < this->max_size; count++) {
 			//keep move forward until find an empty bucket
-			index = (hash + count) % this->max_size;
+			index = modulo(hash + count, this->max_size);
 			if (this->buckets[index] == NULL) {
 				break;
 			}
