@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cstddef>
+#include <string>
 
 //when capacity of Map reaches CURRENT_LOAD, it should be rehashed.
 #define CURRENT_LOAD(max_size) max_size * 0.75
@@ -31,6 +32,14 @@ public:
 	*/
 	class Hashable {
 	public:
+		static int hashString(std::string str) {
+			int hash = 0;
+			for (int i = 0; i < str.length(); i++) {
+				hash += 31 * str[i];
+			}
+			return hash;
+		}
+
 		/*
 		The hash value of this instance. More the unique this value is, then
 		less collision will occur.
