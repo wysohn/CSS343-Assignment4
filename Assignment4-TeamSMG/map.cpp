@@ -5,5 +5,5 @@ int modulo(int value, int div)
 	if (div == 0)
 		throw;
 
-	return ((value % div) + div) % 5;
+	return ((value % div) + div) % div;
 }
