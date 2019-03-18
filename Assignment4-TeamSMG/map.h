@@ -32,6 +32,10 @@ public:
 	*/
 	class Hashable {
 	public:
+		/*
+		Return hash value unique (as much as possible)
+		to the given string.
+		*/
 		static int hashString(std::string str) {
 			int hash = 0;
 			for (int i = 0; i < str.length(); i++) {
