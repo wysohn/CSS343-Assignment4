@@ -39,9 +39,9 @@ public:
 		static int hashString(std::string str) {
 			int hash = 0;
 			for (int i = 0; i < str.length(); i++) {
-				hash += 31 * str[i];
+				hash += str[i];
 			}
-			return hash;
+			return 31 * hash;
 		}
 
 		/*
