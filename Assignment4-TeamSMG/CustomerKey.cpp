@@ -16,7 +16,7 @@ bool CustomerKey::equals(const Hashable* other) const{
         if(this->firstName != key->firstName)
             return false;
         if(this->lastName != key->lastName)
-            return falase;
+            return false;
         
         return true;
     }else{
