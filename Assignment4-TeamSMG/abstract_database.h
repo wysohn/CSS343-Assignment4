@@ -31,6 +31,9 @@ protected:
 	Map<T> data;
 
 public:
+	T* get(typename Map<T>::Hashable* key);
+	T* put(typename Map<T>::Hashable* key, T* val);
+
 	/*
 	Virtual method which will be used to read data from istream.
 	Does nothing if not overrided
@@ -43,6 +46,18 @@ public:
 	*/
 	virtual void write(std::ostream& os);
 };
+
+template<class T>
+inline T * AbstractDatabase<T>::get(typename Map<T>::Hashable * key)
+{
+	return data.get(key);
+}
+
+template<class T>
+inline T * AbstractDatabase<T>::put(typename Map<T>::Hashable * key, T * val)
+{
+	return data.put(key, val);
+}
 
 template<class T>
 inline void AbstractDatabase<T>::read(std::istream & is)
