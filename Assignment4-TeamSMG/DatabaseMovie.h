@@ -1,6 +1,6 @@
 #pragma once
-#include "movie_key.h"
-#include "abstract_database.h"
+#include "MovieKey.h"
+#include "AbstractDatabase.h"
 #include <vector>
 
 
