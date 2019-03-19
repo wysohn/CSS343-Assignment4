@@ -11,6 +11,7 @@ Uncomment this to perform test
 /////////////////////////////////////////////////////////////////////////
 #include <iomanip>
 #include <sstream>
+#include <string>
 
 int success = 0;
 int fail = 0;
@@ -34,7 +35,7 @@ void test(const char* name, T expected, T actual, Pred pred) {
 		success++;
 	}
 	else {
-		std::cout << std::setw(10) << "FAIL\t\t\t[!]" << std::endl;
+		std::cout << std::setw(10) << "FAIL" << "\t\t\t\t[!]" << std::endl;
 		fail++;
 	}
 
@@ -65,6 +66,7 @@ void test(const char* name, bool value) {
 /////////////////////////////////////////////////////////////////////////
 
 #include "map.h"
+#include "drama_movie_key.h"
 
 class TempHashable : public Map<int>::Hashable {
 private:
@@ -204,10 +206,86 @@ void test_Map() {
 	ASSERT_EQ(4, map2.current_capacity);
 }
 
+class TempKey : public MovieKey {
+public:
+	TempKey(std::string title, int year, std::string director)
+		: MovieKey(title, year, director)
+	{
+	}
+
+	//just return 0 as we are not gonna use it
+	int compareTo(const Comparable* other) {
+		return 0;
+	}
+};
+
+void test_MovieKey() {
+	TempKey key("King of Hearts", 1967, "Phillippe De Broca");
+	TempKey same(key);
+	TempKey different("Amazing Story", 2019, "Some person");
+
+	//"King of Hearts" = 1285
+	//1285 * 31 = 39835
+	//"Phillippe De Broca" = 1665
+	//1655 * 31 = 51305
+	ASSERT_EQ(39835 + 31 * 1967 + 51305, key.hashCode());
+	ASSERT_TRUE(key.equals(&same));
+	ASSERT_FALSE(key.equals(&different));
+}
+
+void test_DramaMovieKey() {
+	//basic test
+	DramaMovieKey drama_key("King of Hearts", 1967, "Phillippe De Broca");
+	ASSERT_EQ(std::string("King of Hearts"), drama_key.title);
+	ASSERT_EQ(1967, drama_key.year);
+	ASSERT_EQ(std::string("Phillippe De Broca"), drama_key.director);
+
+	//compareTo() test. Director, then Title
+	
+	DramaMovieKey same_key(drama_key);
+	ASSERT_EQ(std::string("King of Hearts"), same_key.title);
+	ASSERT_EQ(1967, same_key.year);
+	ASSERT_EQ(std::string("Phillippe De Broca"), same_key.director);
+
+	DramaMovieKey larger(same_key);
+	larger.title = "Laughing man";
+	larger.director = "Questionable Person";
+	ASSERT_EQ(std::string("Laughing man"), larger.title);
+	ASSERT_EQ(1967, larger.year);
+	ASSERT_EQ(std::string("Questionable Person"), larger.director);
+
+	DramaMovieKey smaller(same_key);
+	smaller.title = "Joker";
+	smaller.director = "Omg";
+	ASSERT_EQ(std::string("Joker"), smaller.title);
+	ASSERT_EQ(1967, smaller.year);
+	ASSERT_EQ(std::string("Omg"), smaller.director);
+
+	//director equal
+	ASSERT_TRUE(drama_key.compareTo(&same_key) == 0);
+
+	//director smaller
+	ASSERT_TRUE(drama_key.compareTo(&larger) == -1);
+
+	//director larger
+	ASSERT_TRUE(drama_key.compareTo(&smaller) == 1);
+
+	//title eqaul
+	ASSERT_TRUE(drama_key.compareTo(&same_key) == 0);
+
+	//title smaller
+	ASSERT_TRUE(drama_key.compareTo(&larger) == -1);
+
+	//title larger
+	ASSERT_TRUE(drama_key.compareTo(&smaller) == 1);
+}
+
 int main() {
 	///beginning of test
 
 	test_Map();
+	test_MovieKey();
+	test_DramaMovieKey();
 
 	///end of test
 	
