@@ -4,7 +4,7 @@
 /*
 Uncomment this to perform test
 */
-//#define TEST
+#define TEST
 
 #ifdef TEST
 
@@ -300,6 +300,7 @@ int main() {
 #include "AbstractDatabase.h"
 #include "MovieKey.h"
 #include "CustomerKey.h"
+#include "DatabaseMovie.h"
 
 int main() {
 	std::ifstream file_movies("data4movies.txt");
@@ -320,7 +321,7 @@ int main() {
 		return -1;
 	}
 
-	AbstractDatabase<MovieKey>* database_movies = new MovieDatabase();
+	AbstractDatabase<MovieKey>* database_movies = new DatabaseMovie();
 	AbstractDatabase<CustomerKey>* database_customers = NULL;
 	AbstractDatabase<std::queue<std::string>>* database_transactions = NULL;
 
