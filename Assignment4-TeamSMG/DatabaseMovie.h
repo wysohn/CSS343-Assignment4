@@ -1,10 +1,10 @@
 #pragma once
-#include "MovieKey.h"
-#include "AbstractDatabase.h"
+#include "movie_key.h"
+#include "abstract_database.h"
 #include <vector>
 
 
-class DatabaseMovie : AbstractDatabase<MovieKey>
+class DatabaseMovie : public AbstractDatabase<MovieKey>
 {
 	public:
 
