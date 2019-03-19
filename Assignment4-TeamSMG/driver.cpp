@@ -1,9 +1,10 @@
 #include <iostream>
+#include <fstream>
 
 /*
 Uncomment this to perform test
 */
-#define TEST
+//#define TEST
 
 #ifdef TEST
 
@@ -294,8 +295,36 @@ int main() {
 
 #else
 
+#include <queue>
+
+#include "abstract_database.h"
+#include "movie_key.h"
+#include "CustomerKey.h"
+
 int main() {
-	std::cout << "hello world";
+	std::ifstream file_movies("data4movies.txt");
+	if (!file_movies) {
+		std::cout << "data4movie.txt couldn't be opened";
+		return -1;
+	}
+
+	std::ifstream file_customers("data4customers.txt");
+	if (!file_movies) {
+		std::cout << "data4customers.txt couldn't be opened";
+		return -1;
+	}
+
+	std::ifstream file_commands("data4commands.txt");
+	if (!file_movies) {
+		std::cout << "data4commands.txt couldn't be opened";
+		return -1;
+	}
+
+	AbstractDatabase<MovieKey>* database_movies = new MovieDatabase();
+	AbstractDatabase<CustomerKey>* database_customers = NULL;
+	AbstractDatabase<std::queue<std::string>>* database_transactions = NULL;
+
+	
 	return 0;
 }
 
