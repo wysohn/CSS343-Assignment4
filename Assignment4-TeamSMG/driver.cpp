@@ -66,8 +66,8 @@ void test(const char* name, bool value) {
 //end of definitions
 /////////////////////////////////////////////////////////////////////////
 
-#include "map.h"
-#include "drama_movie_key.h"
+#include "Map.h"
+#include "DramaMovieKey.h"
 
 class TempHashable : public Map<int>::Hashable {
 private:
@@ -297,8 +297,8 @@ int main() {
 
 #include <queue>
 
-#include "abstract_database.h"
-#include "movie_key.h"
+#include "AbstractDatabase.h"
+#include "MovieKey.h"
 #include "CustomerKey.h"
 
 int main() {

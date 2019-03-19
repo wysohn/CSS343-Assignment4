@@ -1,4 +1,4 @@
-#include "map.h"
+#include "Map.h"
 
 int modulo(int value, int div)
 {

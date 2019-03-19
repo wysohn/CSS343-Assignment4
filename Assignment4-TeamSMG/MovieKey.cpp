@@ -1,4 +1,4 @@
-#include "movie_key.h"
+#include "MovieKey.h"
 
 MovieKey::MovieKey(std::string title, int year, std::string director)
 	: title(title), year(year), director(director)
