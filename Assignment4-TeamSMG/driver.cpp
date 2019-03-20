@@ -4,7 +4,7 @@
 /*
 Uncomment this to perform test
 */
-#define TEST
+//#define TEST
 
 #ifdef TEST
 
@@ -367,6 +367,7 @@ int main() {
 #include "MovieKey.h"
 #include "CustomerKey.h"
 #include "DatabaseMovie.h"
+#include "DatabaseCustomer.h"
 #include "DatabaseTransaction.h"
 
 void inventory() {
@@ -393,14 +394,16 @@ int main() {
 	}
 
 	DatabaseMovie database_movies;
-	//DatabaseCustomer database_customers;
+	DatabaseCustomer database_customers;
 	DatabaseTransaction database_transactions;
 
 	//read movies file
 	file_movies >> database_movies;
+	//sort movies
+	database_movies.sort();
 
 	//read customers files
-	//file_customers >> database_customers;
+	file_customers >> database_customers;
 
 	//process commands
 	char buffer[256];

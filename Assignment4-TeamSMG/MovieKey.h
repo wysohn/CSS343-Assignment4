@@ -39,6 +39,6 @@ public:
 	-dramas (¡®D¡¯) are sorted by Director, then Title 
 	-classics (¡®C¡¯) are sorted by Release date, then Major actor
 	*/
-	virtual int compareTo(const Comparable* other) const =0;
+	virtual int compareTo(const Comparable* other) const;
 };
 
