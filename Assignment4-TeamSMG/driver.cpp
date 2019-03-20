@@ -71,9 +71,16 @@ void test(int line, const char* name, bool value) {
 #include "Map.h"
 #include "DramaMovieKey.h"
 #include "CustomerKey.h"
+#include "DatabaseCustomer.h"
 #include "DatabaseTransaction.h"
 
 class TempHashable : public Hashable {
+
+	friend std::ostream& operator<< (std::ostream& os, TempHashable& h) {
+		os << h.value;
+		return os;
+	}
+
 private:
 	int value;
 
@@ -98,7 +105,7 @@ public:
 
 void test_Map() {
 	//test for Map
-	Map<int> map; //constructor test (also rehash() is executed in constructor)
+	Map<TempHashable, int> map; //constructor test (also rehash() is executed in constructor)
 	ASSERT_EQ(0, map.get_capacity());
 	ASSERT_EQ(16, map.get_max_size());
 	map.rehash(); //test rehash with previous array existing
@@ -123,89 +130,89 @@ void test_Map() {
 	//functional tests of methods (find_pair put get containsKey remove)
 
 	//find_pair (not found)
-	Map<int>::Pair* pair = map.find_pair(&temp1);
+	Map<TempHashable, int>::Pair* pair = map.find_pair(temp1);
 	ASSERT_NULL(pair);
 
 	//put
-	int* prev = map.put(&temp1, temp1_val);
+	int* prev = map.put(temp1, temp1_val);
 	ASSERT_NULL(prev);
 	ASSERT_EQ(1, map.get_capacity());
 
 	//put (replacement test)
-	prev = map.put(&temp1, temp1_collision_val);
+	prev = map.put(temp1, temp1_collision_val);
 	ASSERT_EQ(1, map.current_capacity);
 	ASSERT_EQ(temp1_val, *prev);
-	prev = map.put(&temp1, temp1_collision_val2);
+	prev = map.put(temp1, temp1_collision_val2);
 	ASSERT_EQ(1, map.current_capacity);
 	ASSERT_EQ(temp1_collision_val, *prev);
-	prev = map.put(&temp1, temp1_collision_val3);
+	prev = map.put(temp1, temp1_collision_val3);
 	ASSERT_EQ(1, map.current_capacity);
 	ASSERT_EQ(temp1_collision_val2, *prev);
-	prev = map.put(&temp1, temp1_val);
+	prev = map.put(temp1, temp1_val);
 	ASSERT_EQ(1, map.current_capacity);
 	ASSERT_EQ(temp1_collision_val3, *prev);
 
 	//find_pair(found) with put test
-	pair = map.find_pair(&temp1);
+	pair = map.find_pair(temp1);
 	ASSERT_NOTNULL(pair);
 	ASSERT_FALSE(pair->deleted);
-	ASSERT_EQ(static_cast<const Hashable*>(&temp1), pair->key);
+	ASSERT_EQ(temp1, *pair->key);
 	ASSERT_EQ(temp1_val, *pair->value);
 
 	//get
-	int* get = map.get(&temp1);
+	int* get = map.get(temp1);
 	ASSERT_EQ(temp1_val, *get);
-	get = map.get(&temp2);
+	get = map.get(temp2);
 	ASSERT_NULL(get);
 
 	//containsKey
-	ASSERT_FALSE(map.containsKey(&temp2));
-	ASSERT_TRUE(map.containsKey(&temp1));
+	ASSERT_FALSE(map.containsKey(temp2));
+	ASSERT_TRUE(map.containsKey(temp1));
 
 	//remove
-	ASSERT_FALSE(map.remove(&temp2));
-	ASSERT_TRUE(map.remove(&temp1));
+	ASSERT_FALSE(map.remove(temp2));
+	ASSERT_TRUE(map.remove(temp1));
 
 	//get (for value deleted)
-	ASSERT_NULL(map.get(&temp1));
+	ASSERT_NULL(map.get(temp1));
 
 	//collision test (50, 18, 82, 114)
 	ASSERT_EQ(1, map.current_capacity);
 	ASSERT_EQ(32, map.max_size);
-	map.put(&temp1_collision, temp1_collision_val);
-	map.put(&temp1_collision2, temp1_collision_val2);
-	map.put(&temp1_collision3, temp1_collision_val3);
+	map.put(temp1_collision, temp1_collision_val);
+	map.put(temp1_collision2, temp1_collision_val2);
+	map.put(temp1_collision3, temp1_collision_val3);
 	ASSERT_EQ(4, map.current_capacity);
 	ASSERT_EQ(32, map.max_size);
-	pair = map.find_pair(&temp1_collision);
-	ASSERT_EQ(static_cast<const Hashable*>(&temp1_collision), pair->key);
+	pair = map.find_pair(temp1_collision);
+	ASSERT_EQ(temp1_collision, *pair->key);
 	ASSERT_EQ(temp1_collision_val, *pair->value);
-	pair = map.find_pair(&temp1_collision2);
-	ASSERT_EQ(static_cast<const Hashable*>(&temp1_collision2), pair->key);
+	pair = map.find_pair(temp1_collision2);
+	ASSERT_EQ(temp1_collision2, *pair->key);
 	ASSERT_EQ(temp1_collision_val2, *pair->value);
-	pair = map.find_pair(&temp1_collision3);
-	ASSERT_EQ(static_cast<const Hashable*>(&temp1_collision3), pair->key);
+	pair = map.find_pair(temp1_collision3);
+	ASSERT_EQ(temp1_collision3, *pair->key);
 	ASSERT_EQ(temp1_collision_val3, *pair->value);
 
-	ASSERT_EQ(static_cast<const Hashable*>(&temp1), map.buckets[18]->key);
-	ASSERT_EQ(static_cast<const Hashable*>(&temp1_collision), map.buckets[19]->key);
-	ASSERT_EQ(static_cast<const Hashable*>(&temp1_collision2), map.buckets[20]->key);
-	ASSERT_EQ(static_cast<const Hashable*>(&temp1_collision3), map.buckets[21]->key);
+	ASSERT_EQ(temp1, *map.buckets[18]->key);
+	ASSERT_EQ(temp1_collision, *map.buckets[19]->key);
+	ASSERT_EQ(temp1_collision2, *map.buckets[20]->key);
+	ASSERT_EQ(temp1_collision3, *map.buckets[21]->key);
 
 	//rehash test on put
 
 	//create new map
-	Map<int> map2;
+	Map<TempHashable, int> map2;
 	//force set max_size for test
 	//this will cause memory leak as size is changed but actual size of array is same
 	map2.max_size = 3;
 	// max_load = 3 * 0.75 = (int)2.25 = 2
 	// (18, 82, 114, 53) 18%3 = 0, 82%3 = 1, 114%3 = 0, 53%3 = 2
-	map2.put(&temp1_collision, temp1_collision_val);
-	map2.put(&temp1_collision2, temp1_collision_val2);
-	map2.put(&temp1_collision3, temp1_collision_val3);
+	map2.put(temp1_collision, temp1_collision_val);
+	map2.put(temp1_collision2, temp1_collision_val2);
+	map2.put(temp1_collision3, temp1_collision_val3);
 	// the forth element should invoke rehash()
-	map2.put(&temp2, temp2_val);
+	map2.put(temp2, temp2_val);
 	// check
 	ASSERT_EQ(6, map2.max_size);
 	ASSERT_EQ(4, map2.current_capacity);
@@ -219,7 +226,7 @@ public:
 	}
 
 	//just return 0 as we are not gonna use it
-	int compareTo(const Comparable* other) {
+	int compareTo(const Comparable* other) const{
 		return 0;
 	}
 };
@@ -297,6 +304,22 @@ void test_CustomerKey() {
 	ASSERT_FALSE(key.equals(&different));
 }
 
+void test_Database_Customer() {
+	DatabaseCustomer dc;
+	
+	std::istringstream iss;
+	iss.str("3333 Witch Wicked\n8888 Pig Porky\n4444 Moose Bullwinkle");
+
+	iss >> dc;
+
+	CustomerKey key1(3333);
+	CustomerKey key2(8888);
+	CustomerKey key3(4444);
+
+	ASSERT_EQ(std::string("Witch"), dc.get(key1)->firstName);
+	ASSERT_EQ(std::string("Wicked"), dc.get(key1)->lastName);
+}
+
 void test_Database_Transaction() {
 	DatabaseTransaction dt;
 
@@ -305,15 +328,15 @@ void test_Database_Transaction() {
 	queue.push("test1");
 	queue.push("test2");
 
-	std::queue<std::string>* prev = dt.put(&key, queue);
+	std::queue<std::string>* prev = dt.put(key, queue);
 	ASSERT_NULL(prev);
 
-	std::queue<std::string>* get = dt.get(&key);
+	std::queue<std::string>* get = dt.get(key);
 	ASSERT_NOTNULL(get);
 	ASSERT_EQ((unsigned) 2, get->size());
 	ASSERT_EQ(std::string("test1"), get->front());
 	get->pop();
-	ASSERT_EQ((unsigned)1, get->size());
+	ASSERT_EQ((unsigned) 1, get->size());
 	ASSERT_EQ(std::string("test2"), get->front());
 	get->pop();
 	ASSERT_EQ((unsigned) 0, get->size());
@@ -327,6 +350,7 @@ int main() {
 	test_DramaMovieKey();
 	test_CustomerKey();
 
+	test_Database_Customer();
 	test_Database_Transaction();
 
 	///end of test

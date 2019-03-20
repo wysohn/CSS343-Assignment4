@@ -8,9 +8,9 @@
 #include "CustomerKey.h"
 
 class DatabaseTransaction :
-	public AbstractDatabase<std::queue<std::string>>
+	public AbstractDatabase<CustomerKey, std::queue<std::string>>
 {
 public:
-	bool showTransactions(std::ostream& os, CustomerKey * key);
+	bool showTransactions(std::ostream& os, CustomerKey& key);
 };
 

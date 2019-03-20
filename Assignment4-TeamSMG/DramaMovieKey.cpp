@@ -5,7 +5,7 @@ DramaMovieKey::DramaMovieKey(std::string title, int year, std::string director)
 {
 }
 
-int DramaMovieKey::compareTo(const Comparable * other)
+int DramaMovieKey::compareTo(const Comparable * other) const
 {
 	if (const DramaMovieKey* key = dynamic_cast<const DramaMovieKey*>(other)) {
 		//compare director

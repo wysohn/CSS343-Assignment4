@@ -2,6 +2,8 @@
 class Comparable
 {
 public:
+	bool operator==(const Comparable& other) const;
+
 	/*
 	Pure virtual method, which compare this object with other object.
 	If the 'other' is same type as this object, this method should
@@ -9,6 +11,6 @@ public:
 	0 if this object is same as 'other,' and 1 if this object is larger than
 	'other.'
 	*/
-	virtual int compareTo(const Comparable* other) =0;
+	virtual int compareTo(const Comparable* other) const =0;
 };
 
