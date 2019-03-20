@@ -3,7 +3,6 @@
 #include <string>
 #include "map.h"
 #include "comparable.h"
-#include "Hashable.h"
 
 class CustomerKey : public Hashable, public Comparable{    
 
@@ -13,6 +12,10 @@ protected:
     std::string lastName; 
     
 public:
+    CustomerKey(int customerID);
+    
+    CustomerKey(int customerID, std::string firstName);
+    
     CustomerKey(int customerID, std::string firstName, std::string lastName);
     
         /*
@@ -35,5 +38,5 @@ public:
 	in order to compare depending on their cutomerID
 	Different customerID has different comparison rule.
 	*/
-    int compareTo(const Comparable* other);
+//    int compareTo(const Comparable* other);
 };
