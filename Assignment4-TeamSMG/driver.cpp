@@ -4,7 +4,7 @@
 /*
 Uncomment this to perform test
 */
-//#define TEST
+#define TEST
 
 #ifdef TEST
 
@@ -223,6 +223,11 @@ public:
 	TempKey(std::string title, int year, std::string director)
 		: MovieKey(title, year, director)
 	{
+	}
+
+	std::string name() const
+	{
+		return "TempKey";
 	}
 
 	//just return 0 as we are not gonna use it
