@@ -318,8 +318,18 @@ void test_Database_Transaction() {
 	queue.push("test1");
 	queue.push("test2");
 
-	dt.put(&key, queue);
+	std::queue<std::string>* prev = dt.put(&key, queue);
+	ASSERT_NULL(prev);
 
+	std::queue<std::string>* get = dt.get(&key);
+	ASSERT_NOTNULL(get);
+	ASSERT_EQ((unsigned) 2, get->size());
+	ASSERT_EQ(std::string("test1"), get->front());
+	get->pop();
+	ASSERT_EQ((unsigned)1, get->size());
+	ASSERT_EQ(std::string("test2"), get->front());
+	get->pop();
+	ASSERT_EQ((unsigned) 0, get->size());
 }
 
 int main() {
