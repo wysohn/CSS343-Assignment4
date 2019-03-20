@@ -23,8 +23,8 @@ bool equals(T a, T b) {
 }
 
 template <class T, class Pred>
-void test(const char* name, T expected, T actual, Pred pred) {
-	std::cout << "TEST " << std::setw(20) << name << " START" << std::endl;
+void test(int line, const char* name, T expected, T actual, Pred pred) {
+	std::cout << "TEST " << "line: " << line << std::setw(20) << name << " START" << std::endl;
 	std::cout << std::endl;
 
 	std::cout << std::setw(10) << "expected:" << expected << std::endl;
@@ -46,29 +46,32 @@ void test(const char* name, T expected, T actual, Pred pred) {
 }
 
 template <class T>
-void test(const char* name, T expected, T actual) {
-	return test(name, expected, actual, equals<T>);
+void test(int line, const char* name, T expected, T actual) {
+	return test(line, name, expected, actual, equals<T>);
 }
 
-void test(const char* name, bool value) {
-	return test(name, true, value);
+void test(int line, const char* name, bool value) {
+	return test(line, name, true, value);
 }
 
 #define private public
 #define protected public
 
-#define ASSERT_EQ(expected, actual) test("[EQ] "#actual, expected, actual)
-#define ASSERT_TRUE(value) test("[TRUE] "#value, value)
-#define ASSERT_FALSE(value) test("[FALSE] "#value, !value)
-#define ASSERT_NULL(value) test("[NULL] "#value, value == NULL)
-#define ASSERT_NOTNULL(value) test("[NOTNULL] "#value, value != NULL)
-#define ASSERT_CUSTOM(expected, actual, pred) test("[CUSTOM] "#actual, expected, actual, pred)
+#define ASSERT_EQ(expected, actual) test(__LINE__, "[EQ] "#actual, expected, actual)
+#define ASSERT_TRUE(value) test(__LINE__, "[TRUE] "#value, value)
+#define ASSERT_FALSE(value) test(__LINE__, "[FALSE] "#value, !value)
+#define ASSERT_NULL(value) test(__LINE__, "[NULL] "#value, value == NULL)
+#define ASSERT_NOTNULL(value) test(__LINE__, "[NOTNULL] "#value, value != NULL)
+#define ASSERT_CUSTOM(expected, actual, pred) test(__LINE__, "[CUSTOM] "#actual, expected, actual, pred)
 //end of definitions
 /////////////////////////////////////////////////////////////////////////
+
+#include <queue>
 
 #include "Map.h"
 #include "DramaMovieKey.h"
 #include "CustomerKey.h"
+#include "DatabaseTransaction.h"
 
 class TempHashable : public Hashable {
 private:
@@ -124,34 +127,34 @@ void test_Map() {
 	ASSERT_NULL(pair);
 
 	//put
-	int* prev = map.put(&temp1, &temp1_val);
+	int* prev = map.put(&temp1, temp1_val);
 	ASSERT_NULL(prev);
 	ASSERT_EQ(1, map.get_capacity());
 
 	//put (replacement test)
-	prev = map.put(&temp1, &temp1_collision_val);
+	prev = map.put(&temp1, temp1_collision_val);
 	ASSERT_EQ(1, map.current_capacity);
-	ASSERT_EQ(&temp1_val, prev);
-	prev = map.put(&temp1, &temp1_collision_val2);
+	ASSERT_EQ(temp1_val, *prev);
+	prev = map.put(&temp1, temp1_collision_val2);
 	ASSERT_EQ(1, map.current_capacity);
-	ASSERT_EQ(&temp1_collision_val, prev);
-	prev = map.put(&temp1, &temp1_collision_val3);
+	ASSERT_EQ(temp1_collision_val, *prev);
+	prev = map.put(&temp1, temp1_collision_val3);
 	ASSERT_EQ(1, map.current_capacity);
-	ASSERT_EQ(&temp1_collision_val2, prev);
-	prev = map.put(&temp1, &temp1_val);
+	ASSERT_EQ(temp1_collision_val2, *prev);
+	prev = map.put(&temp1, temp1_val);
 	ASSERT_EQ(1, map.current_capacity);
-	ASSERT_EQ(&temp1_collision_val3, prev);
+	ASSERT_EQ(temp1_collision_val3, *prev);
 
 	//find_pair(found) with put test
 	pair = map.find_pair(&temp1);
 	ASSERT_NOTNULL(pair);
 	ASSERT_FALSE(pair->deleted);
 	ASSERT_EQ(static_cast<const Hashable*>(&temp1), pair->key);
-	ASSERT_EQ(&temp1_val, pair->value);
+	ASSERT_EQ(temp1_val, *pair->value);
 
 	//get
 	int* get = map.get(&temp1);
-	ASSERT_EQ(&temp1_val, get);
+	ASSERT_EQ(temp1_val, *get);
 	get = map.get(&temp2);
 	ASSERT_NULL(get);
 
@@ -169,20 +172,20 @@ void test_Map() {
 	//collision test (50, 18, 82, 114)
 	ASSERT_EQ(1, map.current_capacity);
 	ASSERT_EQ(32, map.max_size);
-	map.put(&temp1_collision, &temp1_collision_val);
-	map.put(&temp1_collision2, &temp1_collision_val2);
-	map.put(&temp1_collision3, &temp1_collision_val3);
+	map.put(&temp1_collision, temp1_collision_val);
+	map.put(&temp1_collision2, temp1_collision_val2);
+	map.put(&temp1_collision3, temp1_collision_val3);
 	ASSERT_EQ(4, map.current_capacity);
 	ASSERT_EQ(32, map.max_size);
 	pair = map.find_pair(&temp1_collision);
 	ASSERT_EQ(static_cast<const Hashable*>(&temp1_collision), pair->key);
-	ASSERT_EQ(&temp1_collision_val, pair->value);
+	ASSERT_EQ(temp1_collision_val, *pair->value);
 	pair = map.find_pair(&temp1_collision2);
 	ASSERT_EQ(static_cast<const Hashable*>(&temp1_collision2), pair->key);
-	ASSERT_EQ(&temp1_collision_val2, pair->value);
+	ASSERT_EQ(temp1_collision_val2, *pair->value);
 	pair = map.find_pair(&temp1_collision3);
 	ASSERT_EQ(static_cast<const Hashable*>(&temp1_collision3), pair->key);
-	ASSERT_EQ(&temp1_collision_val3, pair->value);
+	ASSERT_EQ(temp1_collision_val3, *pair->value);
 
 	ASSERT_EQ(static_cast<const Hashable*>(&temp1), map.buckets[18]->key);
 	ASSERT_EQ(static_cast<const Hashable*>(&temp1_collision), map.buckets[19]->key);
@@ -198,11 +201,11 @@ void test_Map() {
 	map2.max_size = 3;
 	// max_load = 3 * 0.75 = (int)2.25 = 2
 	// (18, 82, 114, 53) 18%3 = 0, 82%3 = 1, 114%3 = 0, 53%3 = 2
-	map2.put(&temp1_collision, &temp1_collision_val);
-	map2.put(&temp1_collision2, &temp1_collision_val2);
-	map2.put(&temp1_collision3, &temp1_collision_val3);
+	map2.put(&temp1_collision, temp1_collision_val);
+	map2.put(&temp1_collision2, temp1_collision_val2);
+	map2.put(&temp1_collision3, temp1_collision_val3);
 	// the forth element should invoke rehash()
-	map2.put(&temp2, &temp2_val);
+	map2.put(&temp2, temp2_val);
 	// check
 	ASSERT_EQ(6, map2.max_size);
 	ASSERT_EQ(4, map2.current_capacity);
@@ -307,6 +310,18 @@ void test_CustomerKey() {
 	ASSERT_FALSE(key.equals(&different));
 }
 
+void test_Database_Transaction() {
+	DatabaseTransaction dt;
+
+	CustomerKey key(1234);
+	std::queue<std::string> queue;
+	queue.push("test1");
+	queue.push("test2");
+
+	dt.put(&key, queue);
+
+}
+
 int main() {
 	///beginning of test
 
@@ -314,6 +329,8 @@ int main() {
 	test_MovieKey();
 	test_DramaMovieKey();
 	test_CustomerKey();
+
+	test_Database_Transaction();
 
 	///end of test
 	

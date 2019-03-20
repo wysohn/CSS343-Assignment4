@@ -90,7 +90,7 @@ public:
 	replaced with new value.
 	Returns previous value if replaced or NULL if it's new value.
 	*/
-	T* put(const Hashable* key, T* value);
+	T* put(const Hashable* key, T& value);
 
 	/*
 	Check if given key exist in this Map.
@@ -125,7 +125,7 @@ inline void Map<T>::rehash()
 	if (temp != NULL) {
 		for (int i = 0; i < prev_max; i++) {
 			if (temp[i] != NULL) {
-				put((temp[i])->key, (temp[i])->value);
+				put((temp[i])->key, *(temp[i])->value);
 			}
 		}
 
@@ -140,8 +140,10 @@ inline void Map<T>::clear(Pair** bucket, int size)
 {
 	//delete each bucket
 	for (int i = 0; i < size; i++) {
-		if(bucket[i])
+		if (bucket[i]) {
+			delete bucket[i]->value;
 			delete bucket[i];
+		}
 	}
 
 	//delete the bucket array
@@ -218,7 +220,7 @@ T* Map<T>::get(const Hashable* key) const
 }
 
 template<class T>
-T* Map<T>::put(const Hashable* key, T* value)
+T* Map<T>::put(const Hashable* key, T& value)
 {
 	//retrive previous pair
 	Pair* prev_pair = find_pair(key);
@@ -251,7 +253,7 @@ T* Map<T>::put(const Hashable* key, T* value)
 		//create new pair
 		Pair* bucket = new Pair();
 		bucket->key = key;
-		bucket->value = value;
+		bucket->value = new T(value);
 
 		//assign to bucket
 		this->buckets[index] = bucket;
@@ -262,7 +264,7 @@ T* Map<T>::put(const Hashable* key, T* value)
 	//or replace
 	else {
 		T* prev = prev_pair->value;
-		prev_pair->value = value;
+		prev_pair->value = new T(value);
 
 		//return the previous value
 		return prev;
