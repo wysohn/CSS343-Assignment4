@@ -5,39 +5,24 @@
 #include "map.h"
 #include "comparable.h"
 
-class CustomerInfo : public Hashable, public Comparable{
+class CustomerInfo{
     
+	friend std::ostream& operator>>(std::ostream& os, CustomerInfo& info) {
+		os << info.customerID;
+		if (info.firstName.size() > 0) {
+			os << " " << info.firstName;
+		}
+		if (info.lastName.size() > 0) {
+			os << " " << info.lastName;
+		}
+		return os;
+	}
+
 protected:
     int customerID;
     std::string firstName;
     std::string lastName; 
     
 public:
-    CustomerInfo(int customerID);
-    
-    CustomerInfo(int customerID, std::string firstName);
-    
     CustomerInfo(int customerID, std::string firstName, std::string lastName);
-    
-        /*
-	Generate hash value based on customerID, firstName, and lastname.
-	Chidren class must override this method again to produce
-	different hash value.
-	*/
-    virtual int hashCode() const;    
-    
-	/*
-	Check if this object's customerID, firstName, and lastName
-	is exactly matching with the 'other' object's
-	customerID, firstName, and lastName. If 'other' is not
-	same type as this object, it should be always false.
-	*/
-    virtual bool equals(const Hashable* other) const;
-    
-    /*
-	All children class must implement this method
-	in order to compare depending on their cutomerID
-	Different customerID has different comparison rule.
-	*/
-    int compareTo(const Comparable* other) const;
 };

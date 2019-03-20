@@ -15,13 +15,13 @@ be the fstream that is connected with the given file for Assignment4.
 template <class K, class T>
 class AbstractDatabase
 {
-	friend std::ostream& operator<< (std::ostream& os, const AbstractDatabase<K, T>& ad) {
+	friend std::ostream& operator<< (std::ostream& os, AbstractDatabase<K, T>& ad) {
 		//let the write() method to handle the rest
 		ad.write(os);
 		return os;
 	}
 
-	friend std::istream& operator>> (std::istream& is, const AbstractDatabase<K, T>& ad) {
+	friend std::istream& operator>> (std::istream& is, AbstractDatabase<K, T>& ad) {
 		//let the read() method to handle the rest
 		ad.read(is);
 		return is;

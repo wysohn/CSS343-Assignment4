@@ -71,6 +71,7 @@ void test(int line, const char* name, bool value) {
 #include "Map.h"
 #include "DramaMovieKey.h"
 #include "CustomerKey.h"
+#include "DatabaseCustomer.h"
 #include "DatabaseTransaction.h"
 
 class TempHashable : public Hashable {
@@ -303,6 +304,22 @@ void test_CustomerKey() {
 	ASSERT_FALSE(key.equals(&different));
 }
 
+void test_Database_Customer() {
+	DatabaseCustomer dc;
+	
+	std::istringstream iss;
+	iss.str("3333 Witch Wicked\n8888 Pig Porky\n4444 Moose Bullwinkle");
+
+	iss >> dc;
+
+	CustomerKey key1(3333);
+	CustomerKey key2(8888);
+	CustomerKey key3(4444);
+
+	ASSERT_EQ(std::string("Witch"), dc.get(key1)->firstName);
+	ASSERT_EQ(std::string("Wicked"), dc.get(key1)->lastName);
+}
+
 void test_Database_Transaction() {
 	DatabaseTransaction dt;
 
@@ -319,7 +336,7 @@ void test_Database_Transaction() {
 	ASSERT_EQ((unsigned) 2, get->size());
 	ASSERT_EQ(std::string("test1"), get->front());
 	get->pop();
-	ASSERT_EQ((unsigned)1, get->size());
+	ASSERT_EQ((unsigned) 1, get->size());
 	ASSERT_EQ(std::string("test2"), get->front());
 	get->pop();
 	ASSERT_EQ((unsigned) 0, get->size());
@@ -333,6 +350,7 @@ int main() {
 	test_DramaMovieKey();
 	test_CustomerKey();
 
+	test_Database_Customer();
 	test_Database_Transaction();
 
 	///end of test
