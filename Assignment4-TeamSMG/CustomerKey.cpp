@@ -6,7 +6,7 @@ CustomerKey::CustomerKey(int customerID)
 }
 
 int CustomerKey::hashCode() const{
-    return customerID;
+    return 31 * customerID;
 }
 
 bool CustomerKey::equals(const Hashable* other) const{
