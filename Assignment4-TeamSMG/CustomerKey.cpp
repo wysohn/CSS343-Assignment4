@@ -18,7 +18,7 @@ CustomerKey::CustomerKey(int customerID, std::string firstName,
 
 
 int CustomerKey::hashCode() const{
-    return 31 * customerID + hashString(firstName) + hashString(lastName);
+    return 31 * customerID;
 }
 
 bool CustomerKey::equals(const Hashable* other) const{
