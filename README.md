@@ -38,3 +38,89 @@ TeamSMGJeremiah Griffith, Tony Moon, Wooyoung Sonequals() method in order to mak
 * `ComedyMovieKey` - The class represent the Comedy
 
 * `DramaMovieKey` - The class represent the Drama
+
+# How to use
+## Compile
+* Environment: Linux
+* Requirements: gcc, g++, or any c++ compatible compilers
+
+1. Download the source codes
+2. Move to the folder where source codes are saved
+3. If you are using gcc, do `g++ *.cpp`. If you are using something other than gcc, make sure to compile all the cpp files at the same time.
+4. Run executable that has the name whatever you have chosen. Default is usually a.out. If it is default output, do `./a.out`
+
+## Data Files
+In order for the program to run properly, it has to read the three files that is formatted according to the specification. Examples are attached together with the source codes.
+
+### data4movies.txt
+This text file consist of all the movies to be loaded on the system. There are three types of movies currently supported:
+1. F - Comedy
+2. D - Drama
+3. C - Classic
+
+Each line indicates a movie, and they have to be formatted accordingly based on their type. Each elements are separated by comma(,). The first element indicates one of the type of movies listed above.
+
+##### Comedy
+Stock, Director, Title, Year of release
+
+`F, 10, Nora Ephron, You've Got Mail, 1998`
+
+##### Drama
+Stock, Director, Title, Year of release
+
+`D, 10, Steven Spielberg, Schindler's List, 1993`
+
+##### Classic
+Stock, Director, Title, Major actor and Release date
+
+`C, 10, George Cukor, Holiday, Cary Grant 9 1938`
+
+### data4customers.txt
+The text file consist of customers who are able to borrow movies.
+
+Each line consist of each customer, and each elements are separated by comma(,).
+
+##### Format
+CustomerID, First name, Last name
+
+`3333 Witch Wicked`
+
+### data4commands.txt
+The text file consist of actions to make with this program. These are the currently supported types of commands:
+1. B (Borrow): Borrow a movie.
+2. R (Return): Return a borrowed movie.
+3. I (Inventory): Show all the available movies.
+4. H (History): Show history of borrow/return.
+
+##### Borrow
+Borrow movie to the specified customer.
+
+* `CustomerID MediaType MovieType Data`
+* * CustomerID: the customer who is borrowing the movie
+* * MediaType: the type of media. Currently only support DVD(D)
+* * MovieType: the type of movie loaded in movie data
+* * Data: the data of the movie. The format is same as movie data.
+
+`B 8000 D F You've Got Mail, 1998`
+
+##### Return
+Return the movie borrowed.
+
+* `CustomerID MediaType MovieType Data`
+* * CustomerID: the customer who is returning the movie
+* * MediaType: the type of media. Currently only support DVD(D)
+* * MovieType: the type of movie loaded in movie data
+* * Data: the data of the movie. The format is same as movie data.
+
+`R 5000 D C 3 1971 Ruth Gordon`
+
+##### Inventory
+List every movies available.
+
+##### History
+List history of borrow/return of the specified customer.
+
+* `CustomerID`
+* * CustomerID: the customer to look up
+
+`H 5000`
