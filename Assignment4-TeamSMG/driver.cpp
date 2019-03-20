@@ -291,23 +291,10 @@ void test_DramaMovieKey() {
 	ASSERT_TRUE(drama_key.compareTo(&smaller) == 1);
 }
 
-class TempKey2 : public CustomerKey {
-public:
-	TempKey2(int customerID)
-		: CustomerKey(customerID)
-	{
-	}
-
-	//just return 0 as we are not gonna use it
-	int compareTo(const Comparable* other) const{
-		return 0;
-	}
-};
-
 void test_CustomerKey() {
-	TempKey2 key(3333);  
-	TempKey2 same(key);
-	TempKey2 different(8888);
+	CustomerKey key(3333);  
+	CustomerKey same(key);
+	CustomerKey different(8888);
 
 	//3333 * 31 = 103323
         
