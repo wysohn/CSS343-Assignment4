@@ -3,8 +3,9 @@
 #include <string>
 #include "map.h"
 #include "comparable.h"
+#include "Hashable.h"
 
-class CustomerKey : public Map<CustomerKey>::Hashable, public Comparable{    
+class CustomerKey : public Hashable, public Comparable{    
 
 protected:
     int customerID;

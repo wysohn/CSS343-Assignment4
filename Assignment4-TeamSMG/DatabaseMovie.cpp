@@ -16,7 +16,7 @@ void DatabaseMovie::sort()
 
 bool DatabaseMovie::sortHelper(MovieKey *first, MovieKey *second)
 {
-	
+	return true;
 }
 
 void DatabaseMovie::addMovie()

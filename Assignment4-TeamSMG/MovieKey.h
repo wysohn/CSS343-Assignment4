@@ -5,7 +5,7 @@
 #include "map.h"
 #include "comparable.h"
 
-class MovieKey : public Map<MovieKey>::Hashable, public Comparable 
+class MovieKey : public Hashable, public Comparable 
 {
 protected:
 	std::string title;
