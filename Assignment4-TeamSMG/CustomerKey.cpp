@@ -1,12 +1,12 @@
 #include "CustomerKey.h"
 
-CustomerKey::CustomerKey(int customerID, std::string firstName, std::string lastName)
-                    : customerID(customerID), firstName(firstName), lastName(lastName){
+CustomerKey::CustomerKey(int customerID)
+                    : customerID(customerID), firstName(""), lastName(""){
     
 }
 
 int CustomerKey::hashCode() const{
-    return 32 * customerID + hashString(firstName) + hashString(lastName);
+    return customerID;
 }
 
 bool CustomerKey::equals(const Hashable* other) const{
@@ -22,4 +22,21 @@ bool CustomerKey::equals(const Hashable* other) const{
     }else{
         return false;
     }
+}
+
+int CustomerKey::compareTo(const Comparable * other){
+	if (const CustomerKey* key = dynamic_cast<const CustomerKey*>(other)) {            
+		if (this->customerID < key->customerID) {
+			return -1;
+		}
+		else if (this->customerID > key->customerID) {
+			return 1;
+		}                
+		else {
+                    return 0;
+		}
+	}
+	else {
+		throw;
+	}
 }
