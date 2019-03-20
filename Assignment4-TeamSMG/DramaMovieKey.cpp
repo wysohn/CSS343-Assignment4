@@ -32,3 +32,8 @@ int DramaMovieKey::compareTo(const Comparable * other) const
 		throw;
 	}
 }
+
+std::string DramaMovieKey::name() const
+{
+	return "Drama";
+}

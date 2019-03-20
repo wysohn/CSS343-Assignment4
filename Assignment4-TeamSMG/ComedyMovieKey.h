@@ -4,5 +4,7 @@ class ComedyMovieKey :
 	public MovieKey
 {
 public:
+
+	std::string name() const;
 };
 
