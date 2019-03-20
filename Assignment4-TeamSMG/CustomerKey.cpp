@@ -32,7 +32,7 @@ bool CustomerKey::equals(const Hashable* other) const{
     }
 }
 
-int CustomerKey::compareTo(const Comparable * other){
+int CustomerKey::compareTo(const Comparable * other) const{
 	if (const CustomerKey* key = dynamic_cast<const CustomerKey*>(other)) {            
 		if (this->customerID < key->customerID) {
 			return -1;

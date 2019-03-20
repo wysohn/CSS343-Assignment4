@@ -20,8 +20,10 @@ A Map is a storage, which stores values by pairing them with corresponding keys.
 The keys must be Map::Hashable, and it implies that the keys are stored
 in hashtable. Access to any value is thereby guaranteed to be O(1). Collision
 policy of this Map is closed, linear probing.
+
+Template K should be Hashable
 */
-template <class T>
+template <class K, class T>
 class Map
 {
 private:
@@ -34,7 +36,7 @@ private:
 		/*
 		The key, which is Hashable
 		*/
-		const Hashable* key;
+		K* key;
 		/*
 		Actual value saved
 		*/
@@ -59,7 +61,7 @@ private:
 	/*
 	Attempt to get the pair associated with given key.
 	*/
-	Pair* find_pair(const Hashable* key) const;
+	Pair* find_pair(const K& key) const;
 
 public:
 	Map();
@@ -82,7 +84,7 @@ public:
 	Get the value stored in this Map that is paired with given key.
 	Returns NULL if no such value is found.
 	*/
-	T* get(const Hashable* key) const;
+	T* get(const K& key) const;
 
 	/*
 	Store the value paired with given key.
@@ -90,13 +92,13 @@ public:
 	replaced with new value.
 	Returns previous value if replaced or NULL if it's new value.
 	*/
-	T* put(const Hashable* key, T& value);
+	T* put(const K& key, T& value);
 
 	/*
 	Check if given key exist in this Map.
 	Returns true if exists, false otherwise.
 	*/
-	bool containsKey(const Hashable* key) const;
+	bool containsKey(const K& key) const;
 
 	/*
 	Remove the value paired with the given key.
@@ -106,11 +108,11 @@ public:
 	is called or not.
 	Returns true if removed, false if not exist.
 	*/
-	bool remove(const Hashable* key);
+	bool remove(const K& key);
 };
 
-template<class T>
-inline void Map<T>::rehash()
+template<class K, class T>
+inline void Map<K, T>::rehash()
 {
 	//temporarily store previous data
 	Pair** temp = this->buckets;
@@ -125,7 +127,7 @@ inline void Map<T>::rehash()
 	if (temp != NULL) {
 		for (int i = 0; i < prev_max; i++) {
 			if (temp[i] != NULL) {
-				put((temp[i])->key, *(temp[i])->value);
+				put(*(temp[i])->key, *(temp[i])->value);
 			}
 		}
 
@@ -135,12 +137,13 @@ inline void Map<T>::rehash()
 
 }
 
-template<class T>
-inline void Map<T>::clear(Pair** bucket, int size)
+template<class K, class T>
+inline void Map<K, T>::clear(Pair** bucket, int size)
 {
 	//delete each bucket
 	for (int i = 0; i < size; i++) {
 		if (bucket[i]) {
+			delete bucket[i]->key;
 			delete bucket[i]->value;
 			delete bucket[i];
 		}
@@ -150,10 +153,10 @@ inline void Map<T>::clear(Pair** bucket, int size)
 	delete[] bucket;
 }
 
-template<class T>
-inline typename Map<T>::Pair* Map<T>::find_pair(const Hashable* key) const
+template<class K, class T>
+inline typename Map<K, T>::Pair* Map<K, T>::find_pair(const K& key) const
 {
-	int hash = modulo(key->hashCode(), this->max_size);
+	int hash = modulo(key.hashCode(), this->max_size);
 
 	Pair* pair = NULL;
 
@@ -169,7 +172,7 @@ inline typename Map<T>::Pair* Map<T>::find_pair(const Hashable* key) const
 		}
 
 		//if the pair is what we are looking for, stop iteration.
-		if (key->equals(pair->key)) {
+		if (key.equals(pair->key)) {
 			break;
 		}
 	}
@@ -182,8 +185,8 @@ inline typename Map<T>::Pair* Map<T>::find_pair(const Hashable* key) const
 	return pair;
 }
 
-template<class T>
-Map<T>::Map() : current_capacity(0), max_size(8), buckets(NULL)
+template<class K, class T>
+Map<K, T>::Map() : current_capacity(0), max_size(8), buckets(NULL)
 {
 	//max_size start from 8, so that constructor
 	//expand the buckets to 16, which is commonly
@@ -191,26 +194,26 @@ Map<T>::Map() : current_capacity(0), max_size(8), buckets(NULL)
 	rehash();
 }
 
-template<class T>
-Map<T>::~Map()
+template<class K, class T>
+Map<K, T>::~Map()
 {
 	this->clear(this->buckets, this->max_size);
 }
 
-template<class T>
-int Map<T>::get_capacity() const
+template<class K, class T>
+int Map<K, T>::get_capacity() const
 {
 	return this->current_capacity;
 }
 
-template<class T>
-int Map<T>::get_max_size() const
+template<class K, class T>
+int Map<K, T>::get_max_size() const
 {
 	return this->max_size;
 }
 
-template<class T>
-T* Map<T>::get(const Hashable* key) const
+template<class K, class T>
+T* Map<K, T>::get(const K& key) const
 {
 	//retrive appropriate value
 	Pair* pair = find_pair(key);
@@ -219,8 +222,8 @@ T* Map<T>::get(const Hashable* key) const
 	return pair == NULL ? NULL : pair->value;
 }
 
-template<class T>
-T* Map<T>::put(const Hashable* key, T& value)
+template<class K, class T>
+T* Map<K, T>::put(const K& key, T& value)
 {
 	//retrive previous pair
 	Pair* prev_pair = find_pair(key);
@@ -232,7 +235,7 @@ T* Map<T>::put(const Hashable* key, T& value)
 			this->rehash();
 		}
 
-		int hash = modulo(key->hashCode(), this->max_size);
+		int hash = modulo(key.hashCode(), this->max_size);
 		int index = -1;
 
 		//iterate all buckets at least once until finding empty bucket
@@ -252,7 +255,7 @@ T* Map<T>::put(const Hashable* key, T& value)
 
 		//create new pair
 		Pair* bucket = new Pair();
-		bucket->key = key;
+		bucket->key = new K(key);
 		bucket->value = new T(value);
 
 		//assign to bucket
@@ -271,8 +274,8 @@ T* Map<T>::put(const Hashable* key, T& value)
 	}
 }
 
-template<class T>
-bool Map<T>::containsKey(const Hashable* key) const
+template<class K, class T>
+bool Map<K, T>::containsKey(const K& key) const
 {
 	//retrive appropriate value if exist
 	Pair* pair = find_pair(key);
@@ -281,8 +284,8 @@ bool Map<T>::containsKey(const Hashable* key) const
 	return pair != NULL && !pair->deleted;
 }
 
-template<class T>
-bool Map<T>::remove(const Hashable* key)
+template<class K, class T>
+bool Map<K, T>::remove(const K& key)
 {
 	//retrive appropriate value if exist
 	Pair* pair = find_pair(key);

@@ -23,6 +23,10 @@ public:
 		return 31 * hash;
 	}
 
+	bool operator==(const Hashable& other) const {
+		return equals(&other);
+	}
+
 	/*
 	The hash value of this instance. More the unique this value is, then
 	less collision will occur.

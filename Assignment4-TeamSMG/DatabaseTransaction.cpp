@@ -1,6 +1,6 @@
 #include "DatabaseTransaction.h"
 
-bool DatabaseTransaction::showTransactions(std::ostream & os, CustomerKey * key)
+bool DatabaseTransaction::showTransactions(std::ostream & os, CustomerKey& key)
 {
 	std::queue<std::string>* queue = this->get(key);
 	if (queue == NULL)

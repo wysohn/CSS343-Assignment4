@@ -10,6 +10,6 @@ public:
 	/*
 	-dramas (¡®D¡¯) are sorted by Director, then Title 
 	*/
-	int compareTo(const Comparable* other);
+	int compareTo(const Comparable* other) const;
 };
 

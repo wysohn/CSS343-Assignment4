@@ -4,7 +4,7 @@
 #include <vector>
 
 
-class DatabaseMovie : public AbstractDatabase<MovieKey>
+class DatabaseMovie : public AbstractDatabase<MovieKey, int>
 {
 	public:
 
