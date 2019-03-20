@@ -389,14 +389,21 @@ int main() {
 
 			break;
 		case 'R'://return (customerID, media type, movie type, move data)
+			file_commands >> customerId;
+			file_commands >> mediaType;
+			file_commands >> movieType;
+			file_commands.getline(buffer, 256);
+			data = std::string(buffer);
+
+
 			break;
 		case 'I'://inventory ()
 			std::cout << database_movies;
 			break;
 		case 'H'://history (customerID)
 			file_commands >> customerId;
-			CustomerKey key(customerId);
-			database_transactions.showTransactions(std::cout, &key);
+			//CustomerKey key(customerId);
+			//database_transactions.showTransactions(std::cout, &key);
 			break;
 		default:
 			std::cout << "Unknown Command " << actionType << " !" << std::endl;
