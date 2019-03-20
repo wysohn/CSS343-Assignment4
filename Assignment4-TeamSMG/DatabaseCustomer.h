@@ -83,5 +83,5 @@ inline void DatabaseCustomer<T>::read(std::istream & is)
 template<class T>
 inline void DatabaseCustomer<T>::write(std::ostream & os)
 {
-    
+    //do nothing if not overrided
 }
