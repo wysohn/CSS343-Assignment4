@@ -38,5 +38,5 @@ public:
 	in order to compare depending on their cutomerID
 	Different customerID has different comparison rule.
 	*/
-//    int compareTo(const Comparable* other);
+    int compareTo(const Comparable* other);
 };
