@@ -5,8 +5,10 @@ Inventory Tracking System (ITS) is a system which is separated into two parts: t
 
 # Class Diagram
 ## System Classes
+![alt text](https://github.com/wysohn/CSS343-Assignment4/blob/master/Classes_System.jpg)
 
 ## Data Clases
+![alt text](https://github.com/wysohn/CSS343-Assignment4/blob/master/Classes_Data.jpg)
 
 # Class Description
 ## System Classes
