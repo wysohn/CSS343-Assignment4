@@ -284,8 +284,8 @@ void test_DramaMovieKey() {
 
 class TempKey2 : public CustomerKey {
 public:
-	TempKey2(int customerID, std::string firstName, std::string lastName)
-		: CustomerKey(customerID, firstName, lastName)
+	TempKey2(int customerID)
+		: CustomerKey(customerID)
 	{
 	}
 
@@ -296,17 +296,13 @@ public:
 };
 
 void test_CustomerKey() {
-	TempKey2 key(3333, "Witch", "Wicked");  
+	TempKey2 key(3333);  
 	TempKey2 same(key);
-	TempKey2 different(8888, "Pig", "Porky");
+	TempKey2 different(8888);
 
 	//3333 * 31 = 103323
-        //Witch = 511
-        //511 * 31 = 15841
-        //Wicked = 599
-        //599 * 31 = 18569
         
-	ASSERT_EQ(103323 + 15841 + 18569, key.hashCode());
+	ASSERT_EQ(103323, key.hashCode());
 	ASSERT_TRUE(key.equals(&same));
 	ASSERT_FALSE(key.equals(&different));
 }
