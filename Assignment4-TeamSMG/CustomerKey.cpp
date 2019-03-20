@@ -1,21 +1,29 @@
 #include "CustomerKey.h"
 
 CustomerKey::CustomerKey(int customerID)
-                    : customerID(customerID), firstName(""), lastName(""){
+                    : customerID(customerID){
     
 }
 
+CustomerKey::CustomerKey(int customerID, std::string firstName) 
+                    : customerID(customerID), firstName(firstName){
+    
+}
+
+CustomerKey::CustomerKey(int customerID, std::string firstName, 
+        std::string lastName)
+            : customerID(customerID), firstName(firstName), lastName(lastName){
+    
+}
+
+
 int CustomerKey::hashCode() const{
-    return 31 * customerID;
+    return 31 * customerID + hashString(firstName) + hashString(lastName);
 }
 
 bool CustomerKey::equals(const Hashable* other) const{
     if(const CustomerKey* key = dynamic_cast<const CustomerKey*>(other)){
         if(this->customerID != key->customerID)
-            return false;
-        if(this->firstName != key->firstName)
-            return false;
-        if(this->lastName != key->lastName)
             return false;
         
         return true;
