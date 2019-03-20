@@ -69,7 +69,7 @@ void test(const char* name, bool value) {
 #include "Map.h"
 #include "DramaMovieKey.h"
 
-class TempHashable : public Map<int>::Hashable {
+class TempHashable : public Hashable {
 private:
 	int value;
 
@@ -145,7 +145,7 @@ void test_Map() {
 	pair = map.find_pair(&temp1);
 	ASSERT_NOTNULL(pair);
 	ASSERT_FALSE(pair->deleted);
-	ASSERT_EQ(static_cast<const Map<int>::Hashable*>(&temp1), pair->key);
+	ASSERT_EQ(static_cast<const Hashable*>(&temp1), pair->key);
 	ASSERT_EQ(&temp1_val, pair->value);
 
 	//get
@@ -174,19 +174,19 @@ void test_Map() {
 	ASSERT_EQ(4, map.current_capacity);
 	ASSERT_EQ(32, map.max_size);
 	pair = map.find_pair(&temp1_collision);
-	ASSERT_EQ(static_cast<const Map<int>::Hashable*>(&temp1_collision), pair->key);
+	ASSERT_EQ(static_cast<const Hashable*>(&temp1_collision), pair->key);
 	ASSERT_EQ(&temp1_collision_val, pair->value);
 	pair = map.find_pair(&temp1_collision2);
-	ASSERT_EQ(static_cast<const Map<int>::Hashable*>(&temp1_collision2), pair->key);
+	ASSERT_EQ(static_cast<const Hashable*>(&temp1_collision2), pair->key);
 	ASSERT_EQ(&temp1_collision_val2, pair->value);
 	pair = map.find_pair(&temp1_collision3);
-	ASSERT_EQ(static_cast<const Map<int>::Hashable*>(&temp1_collision3), pair->key);
+	ASSERT_EQ(static_cast<const Hashable*>(&temp1_collision3), pair->key);
 	ASSERT_EQ(&temp1_collision_val3, pair->value);
 
-	ASSERT_EQ(static_cast<const Map<int>::Hashable*>(&temp1), map.buckets[18]->key);
-	ASSERT_EQ(static_cast<const Map<int>::Hashable*>(&temp1_collision), map.buckets[19]->key);
-	ASSERT_EQ(static_cast<const Map<int>::Hashable*>(&temp1_collision2), map.buckets[20]->key);
-	ASSERT_EQ(static_cast<const Map<int>::Hashable*>(&temp1_collision3), map.buckets[21]->key);
+	ASSERT_EQ(static_cast<const Hashable*>(&temp1), map.buckets[18]->key);
+	ASSERT_EQ(static_cast<const Hashable*>(&temp1_collision), map.buckets[19]->key);
+	ASSERT_EQ(static_cast<const Hashable*>(&temp1_collision2), map.buckets[20]->key);
+	ASSERT_EQ(static_cast<const Hashable*>(&temp1_collision3), map.buckets[21]->key);
 
 	//rehash test on put
 
@@ -296,11 +296,17 @@ int main() {
 #else
 
 #include <queue>
+#include <iostream>
 
 #include "AbstractDatabase.h"
 #include "MovieKey.h"
 #include "CustomerKey.h"
 #include "DatabaseMovie.h"
+#include "DatabaseTransaction.h"
+
+void inventory() {
+
+}
 
 int main() {
 	std::ifstream file_movies("data4movies.txt");
@@ -321,10 +327,51 @@ int main() {
 		return -1;
 	}
 
-	AbstractDatabase<MovieKey>* database_movies = new DatabaseMovie();
-	AbstractDatabase<CustomerKey>* database_customers = NULL;
-	AbstractDatabase<std::queue<std::string>>* database_transactions = NULL;
+	DatabaseMovie database_movies;
+	//DatabaseCustomer database_customers;
+	DatabaseTransaction database_transactions;
 
+	//read movies file
+	file_movies >> database_movies;
+
+	//read customers files
+	//file_customers >> database_customers;
+
+	//process commands
+	char buffer[256];
+	
+	char actionType = 0;
+	int customerId = -1;
+	char mediaType = 0;
+	char movieType = 0;
+	std::string data;
+	while (file_commands) {
+		file_commands >> actionType;
+		switch (actionType) {
+		case 'B'://borrow (customerID, media type, movie type, move data)
+			file_commands >> customerId;
+			file_commands >> mediaType;
+			file_commands >> movieType;
+			file_commands.getline(buffer, 256);
+			data = std::string(buffer);
+
+
+			break;
+		case 'R'://return (customerID, media type, movie type, move data)
+			break;
+		case 'I'://inventory ()
+			std::cout << database_movies;
+			break;
+		case 'H'://history (customerID)
+			file_commands >> customerId;
+			CustomerKey key(customerId);
+			database_transactions.showTransactions(std::cout, &key);
+			break;
+		default:
+			std::cout << "Unknown Command " << actionType << " !" << std::endl;
+			continue;
+		}
+	}
 	
 	return 0;
 }
