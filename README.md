@@ -117,6 +117,8 @@ Return the movie borrowed.
 ##### Inventory
 List every movies available.
 
+`I`
+
 ##### History
 List history of borrow/return of the specified customer.
 
