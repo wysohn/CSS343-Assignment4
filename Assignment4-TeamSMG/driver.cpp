@@ -68,6 +68,7 @@ void test(const char* name, bool value) {
 
 #include "Map.h"
 #include "DramaMovieKey.h"
+#include "CustomerKey.h"
 
 class TempHashable : public Hashable {
 private:
