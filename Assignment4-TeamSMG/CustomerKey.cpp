@@ -6,7 +6,7 @@ CustomerKey::CustomerKey(int customerID, std::string firstName, std::string last
 }
 
 int CustomerKey::hashCode() const{
-    return customerID + hashString(firstName) + hashString(lastName);
+    return 32 * customerID + hashString(firstName) + hashString(lastName);
 }
 
 bool CustomerKey::equals(const Hashable* other) const{
