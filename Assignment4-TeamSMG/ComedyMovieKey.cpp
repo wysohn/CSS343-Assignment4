@@ -1,5 +1,9 @@
 #include "ComedyMovieKey.h"
 
+ComedyMovieKey::ComedyMovieKey(std::string title, int year, std::string director) :
+	MovieKey(title, year, director)
+{}
+
 int ComedyMovieKey::compareTo(const Comparable * other) const
 {
 	if (const ComedyMovieKey* key = dynamic_cast<const ComedyMovieKey*>(other)) {
@@ -33,3 +37,7 @@ std::string ComedyMovieKey::name() const
 	return "Comedy";
 }
 
+void ComedyMovieKey::print(std::ostream& out) const
+{
+	out << "F, " << " [insert stock], " << director << ", " << title << ", " << year << std::endl;
+}

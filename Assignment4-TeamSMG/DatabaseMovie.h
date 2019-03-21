@@ -23,7 +23,7 @@ class DatabaseMovie : public AbstractDatabase<MovieKey, int>
 
 		//bool comp(MovieKey, MovieKey) const;
 
-		void write(std::ostream& os);
+		virtual void write(std::ostream& os);
 
 	private:
 

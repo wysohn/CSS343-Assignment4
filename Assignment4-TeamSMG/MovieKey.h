@@ -44,5 +44,9 @@ public:
 	virtual MovieKey clone() const;
 	
 	virtual std::string name() const;
+
+	virtual void print(std::ostream& os) const;
+
+	friend std::ostream& operator<<(std::ostream& out, const MovieKey& key);
 };
 

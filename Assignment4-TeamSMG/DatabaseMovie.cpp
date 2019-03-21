@@ -171,24 +171,8 @@ void DatabaseMovie::sort()
 
 void DatabaseMovie::write(std::ostream& os)
 {
-	for (auto i = vec.begin(); i != vec.end(); i++)
+	for(std::vector<MovieKey>::size_type i = 0; i != vec.size(); i++)
 	{
-		//Movie is a Comedy
-		if (i->name() == "Comedy")
-		{
-			os << "" << std::endl;
-		}
-
-		//Movie is a Drama
-		else if (i->name() == "Drama")
-		{
-			os << "" << std::endl;
-		}
-
-		//Movie is a Classic
-		else
-		{
-			os << "" << std::endl;
-		}
+		os << vec[i];
 	}
 }
