@@ -41,6 +41,6 @@ public:
 	*/
 	virtual int compareTo(const Comparable* other) const;
 	
-	virtual std::string name() const =0;
+	virtual std::string name() const;
 };
 

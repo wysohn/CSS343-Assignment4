@@ -35,3 +35,8 @@ int MovieKey::compareTo(const Comparable * other) const
 {
 	throw;
 }
+
+std::string MovieKey::name() const
+{
+	return "";
+}
