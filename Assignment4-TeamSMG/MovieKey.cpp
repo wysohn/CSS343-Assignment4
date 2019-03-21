@@ -35,3 +35,8 @@ int MovieKey::compareTo(const Comparable * other) const
 {
 	throw;
 }
+
+MovieKey MovieKey::clone() const
+{
+	return MovieKey(*this);
+}

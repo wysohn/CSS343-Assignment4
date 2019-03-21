@@ -39,4 +39,6 @@ public:
 	Different customerID has different comparison rule.
 	*/
     int compareTo(const Comparable* other) const;
+
+	CustomerKey clone() const;
 };

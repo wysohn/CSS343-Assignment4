@@ -6,6 +6,8 @@ class ClassicMovieKey :
 {
 public:
 
+	MovieKey clone() const;
+
 	std::string name() const;
 
 };

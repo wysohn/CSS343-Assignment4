@@ -21,7 +21,7 @@ The keys must be Map::Hashable, and it implies that the keys are stored
 in hashtable. Access to any value is thereby guaranteed to be O(1). Collision
 policy of this Map is closed, linear probing.
 
-Template K should be Hashable
+Template K should be Hashable and Clonable
 */
 template <class K, class T>
 class Map
@@ -255,7 +255,7 @@ T* Map<K, T>::put(const K& key, T& value)
 
 		//create new pair
 		Pair* bucket = new Pair();
-		bucket->key = new K(key);
+		bucket->key = new K(key.clone());
 		bucket->value = new T(value);
 
 		//assign to bucket

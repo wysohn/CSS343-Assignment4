@@ -40,7 +40,9 @@ public:
 	-classics (¡®C¡¯) are sorted by Release date, then Major actor
 	*/
 	virtual int compareTo(const Comparable* other) const;
+
+	virtual MovieKey clone() const;
 	
-	virtual std::string name() const =0;
+	virtual std::string name() const;
 };
 

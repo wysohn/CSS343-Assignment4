@@ -48,3 +48,8 @@ int CustomerKey::compareTo(const Comparable * other) const{
 		throw;
 	}
 }
+
+CustomerKey CustomerKey::clone() const
+{
+	return CustomerKey(*this);
+}
