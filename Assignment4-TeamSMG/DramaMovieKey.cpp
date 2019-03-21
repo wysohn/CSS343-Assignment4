@@ -37,3 +37,8 @@ std::string DramaMovieKey::name() const
 {
 	return "Drama";
 }
+
+void DramaMovieKey::print(std::ostream& out) const
+{
+	out << "D, " << " [insert stock], "<< director << ", " << title << ", " << year << std::endl;
+}

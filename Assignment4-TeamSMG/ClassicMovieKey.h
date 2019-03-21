@@ -14,4 +14,6 @@ public:
 	std::string name() const;
 
 	std::string actor;
+
+	void print(std::ostream& out) const;
 };

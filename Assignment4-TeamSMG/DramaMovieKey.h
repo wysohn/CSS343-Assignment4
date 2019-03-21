@@ -13,5 +13,7 @@ public:
 	int compareTo(const Comparable* other) const;
 
 	std::string name() const;
+
+	void print(std::ostream& out) const;
 };
 

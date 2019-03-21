@@ -45,3 +45,14 @@ MovieKey* MovieKey::clone() const
 {
 	return new MovieKey(*this);
 }
+
+std::ostream& operator<<(std::ostream& out, const MovieKey& key)
+{
+	key.print(out);
+	return out;
+}
+
+void MovieKey::print(std::ostream& out) const
+{
+	out << std::endl;
+}
