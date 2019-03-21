@@ -30,5 +30,5 @@ class DatabaseMovie : public AbstractDatabase<MovieKey, int>
 		void write(std::ostream& os);
 	private:
 
-		std::vector<MovieKey> vec;
+		std::vector<std::shared_ptr<MovieKey>> vec;
 };

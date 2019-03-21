@@ -7,10 +7,9 @@ MovieKey* ClassicMovieKey::clone() const
 
 //call MovieKey constructor for title, year, and director, and then assign passed major actor
 //to the actor field of this class
-ClassicMovieKey::ClassicMovieKey(std::string title, int year, std::string director, std::string actor)
-	: MovieKey(title, year, director)
+ClassicMovieKey::ClassicMovieKey(std::string title, int year, std::string director, std::string actor, int month)
+	: MovieKey(title, year, director), actor(actor), month(month)
 {
-	actor = actor;
 }
 
 int ClassicMovieKey::compareTo(const Comparable * other) const

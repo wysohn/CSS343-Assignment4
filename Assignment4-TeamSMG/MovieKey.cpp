@@ -31,7 +31,7 @@ bool MovieKey::equals(const Hashable * other) const
 	}
 }
 
-int MovieKey::compareTo(const Comparable * other) const
+int MovieKey::compareTo(const Comparable* other) const
 {
 	throw;
 }

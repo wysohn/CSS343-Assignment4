@@ -1,5 +1,7 @@
 #include "DatabaseMovie.h"
 
+#include <sstream>
+
 	//bool DatabaseMovie::comp(MovieKey first, MovieKey second) const
 	//{
 	//	//MovieKeys share same subclass instance -- same genre
@@ -56,14 +58,17 @@ void DatabaseMovie::sort()
 {
 
 	std::sort(vec.begin(), vec.end(),
-		[](MovieKey const &first, MovieKey const &second)
+		[](std::shared_ptr<MovieKey> ptr_first, std::shared_ptr<MovieKey> ptr_second)
 	{
+		MovieKey* first = ptr_first.get();
+		MovieKey* second = ptr_second.get();
+
 		//MovieKeys share same subclass instance -- same genre
-		if (typeid(first) == typeid(second))
+		if (first->name() == second->name())
 		{
 
 			// first < second
-			if (first.compareTo(&second) == -1)
+			if (first->compareTo(second) == -1)
 			{
 				return true;
 			}
@@ -79,16 +84,16 @@ void DatabaseMovie::sort()
 		else
 		{
 			//first is Comedy, and Comedy < [any other genre]
-			if (first.name() == "Comedy")
+			if (first->name() == "Comedy")
 			{
 				return true;
 			}
 
 			//first is Drama
-			else if (first.name() == "Drama")
+			else if (first->name() == "Drama")
 			{
 				//second is Comedy, and Drama > Comedy
-				if (second.name() == "Comedy")
+				if (second->name() == "Comedy")
 				{
 					return false;
 				}
@@ -195,28 +200,61 @@ void DatabaseMovie::read(std::istream & is)
 		std::string tokens[5];
 		
 		int i = 0;
-		char* pch = strtok(buffer, ",");
+		char* nextToken;
+		char* pch = strtok_s(buffer, ",", &nextToken);
 		while (pch != NULL)
 		{
 			tokens[i++] = std::string(pch);
-			pch = strtok(NULL, ",");
+			pch = strtok_s(NULL, ",", &nextToken);
 		}
 
 		if (tokens[0] == "F" || tokens[0]== "D") {
 			int stock = stoi(tokens[1]);
-			std::string direct = tokens[2];
+			std::string director = tokens[2];
 			std::string title = tokens[3];
 			int year = stoi(tokens[4]);
 
 			if (tokens[0] == "F") {
+				ComedyMovieKey key(title, year, director);
+				int* previous = this->get(key);
+				int newStock = (previous == NULL ? 0 : *previous) + stock;
 
+				this->put(key, newStock);
+				if (previous == NULL)
+					this->vec.push_back(std::shared_ptr<ComedyMovieKey>(new ComedyMovieKey(key)));
 			}
 			else {
+				DramaMovieKey key(title, year, director);
+				int* previous = this->get(key);
+				int newStock = (previous == NULL ? 0 : *previous) + stock;
 
+				this->put(key, newStock);
+				if(previous == NULL)
+					this->vec.push_back(std::shared_ptr<DramaMovieKey>(new DramaMovieKey(key)));
 			}
 		}
 		else if (tokens[0] == "C") {
+			int stock = stoi(tokens[1]);
+			std::string director = tokens[2];
+			std::string title = tokens[3];
+			std::string actor_month_year = tokens[4];
 
+			std::istringstream iss(actor_month_year);
+			std::string actor_first;
+			std::string actor_last;
+			std::string month_str;
+			std::string year_str;
+			iss >> actor_first >> actor_last >> month_str >> year_str;
+			int month = stoi(month_str);
+			int year = stoi(year_str);
+
+			ClassicMovieKey key(title, year, director, actor_first + " " + actor_last, month);
+			int* previous = this->get(key);
+			int newStock = (previous == NULL ? 0 : *previous) + stock;
+
+			this->put(key, newStock);
+			if (previous == NULL)
+				this->vec.push_back(std::shared_ptr<ClassicMovieKey>(new ClassicMovieKey(key)));
 		}
 		else {
 			//?
@@ -228,6 +266,6 @@ void DatabaseMovie::write(std::ostream& os)
 {
 	for(std::vector<MovieKey>::size_type i = 0; i != vec.size(); i++)
 	{
-		os << vec[i];
+		os << (i+1) << ". " << *vec[i].get() << std::endl;
 	}
 }
