@@ -6,5 +6,7 @@ class ComedyMovieKey :
 public:
 
 	std::string name() const;
+
+	int compareTo(const Comparable* other) const;
 };
 

@@ -19,11 +19,13 @@ class DatabaseMovie : public AbstractDatabase<MovieKey, int>
 
 		void sort();
 
+		//bool sortHelper(const MovieKey *, const MovieKey *);
+
+		//bool comp(MovieKey, MovieKey) const;
+
 		void write(std::ostream& os);
 
 	private:
 
 		std::vector<MovieKey> vec;
-
-		bool sortHelper(MovieKey *, MovieKey *);
 };
