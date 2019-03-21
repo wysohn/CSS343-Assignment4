@@ -169,6 +169,61 @@ void DatabaseMovie::sort()
 //}
 //
 
+void DatabaseMovie::read(std::istream & is)
+{
+	/*
+	Comedy
+	Stock, Director, Title, Year of release
+
+	F, 10, Nora Ephron, You've Got Mail, 1998
+
+	Drama
+	Stock, Director, Title, Year of release
+
+	D, 10, Steven Spielberg, Schindler's List, 1993
+
+	Classic
+	Stock, Director, Title, Major actor and Release date
+
+	C, 10, George Cukor, Holiday, Cary Grant 9 1938
+	*/
+
+	char buffer[256];
+
+	while (is) {
+		is.getline(buffer, 256);
+		std::string tokens[5];
+		
+		int i = 0;
+		char* pch = strtok(buffer, ",");
+		while (pch != NULL)
+		{
+			tokens[i++] = std::string(pch);
+			pch = strtok(NULL, ",");
+		}
+
+		if (tokens[0] == "F" || tokens[0]== "D") {
+			int stock = stoi(tokens[1]);
+			std::string direct = tokens[2];
+			std::string title = tokens[3];
+			int year = stoi(tokens[4]);
+
+			if (tokens[0] == "F") {
+
+			}
+			else {
+
+			}
+		}
+		else if (tokens[0] == "C") {
+
+		}
+		else {
+			//?
+		}
+	}
+}
+
 void DatabaseMovie::write(std::ostream& os)
 {
 	for (auto i = vec.begin(); i != vec.end(); i++)

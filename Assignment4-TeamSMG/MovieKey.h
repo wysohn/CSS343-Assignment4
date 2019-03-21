@@ -41,7 +41,7 @@ public:
 	*/
 	virtual int compareTo(const Comparable* other) const;
 
-	virtual MovieKey clone() const;
+	virtual MovieKey* clone() const;
 	
 	virtual std::string name() const;
 };

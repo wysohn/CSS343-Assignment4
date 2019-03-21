@@ -1,8 +1,8 @@
 #include "ClassicMovieKey.h"
 
-MovieKey ClassicMovieKey::clone() const
+MovieKey* ClassicMovieKey::clone() const
 {
-	return ClassicMovieKey(*this);
+	return new ClassicMovieKey(*this);
 }
 
 //call MovieKey constructor for title, year, and director, and then assign passed major actor

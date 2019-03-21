@@ -9,7 +9,7 @@ public:
 
 	int compareTo(const Comparable* other) const;
 
-	MovieKey clone() const;
+	MovieKey* clone() const;
 
 	std::string name() const;
 

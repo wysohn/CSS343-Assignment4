@@ -40,5 +40,5 @@ public:
 	*/
     int compareTo(const Comparable* other) const;
 
-	CustomerKey clone() const;
+	CustomerKey* clone() const;
 };

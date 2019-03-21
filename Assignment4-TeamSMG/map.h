@@ -255,7 +255,7 @@ T* Map<K, T>::put(const K& key, T& value)
 
 		//create new pair
 		Pair* bucket = new Pair();
-		bucket->key = new K(key.clone());
+		bucket->key = key.clone();
 		bucket->value = new T(value);
 
 		//assign to bucket

@@ -41,7 +41,7 @@ std::string MovieKey::name() const
 	return "";
 }
 
-MovieKey MovieKey::clone() const
+MovieKey* MovieKey::clone() const
 {
-	return MovieKey(*this);
+	return new MovieKey(*this);
 }

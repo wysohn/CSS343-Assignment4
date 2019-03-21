@@ -1,6 +1,9 @@
 #pragma once
 #include "MovieKey.h"
 #include "AbstractDatabase.h"
+#include "DramaMovieKey.h"
+#include "ClassicMovieKey.h"
+#include "ComedyMovieKey.h"
 #include <algorithm>
 #include <typeinfo>
 #include <vector>
@@ -16,15 +19,15 @@ Notes:
 class DatabaseMovie : public AbstractDatabase<MovieKey, int>
 {
 	public:
-
 		void sort();
 
 		//bool sortHelper(const MovieKey *, const MovieKey *);
 
 		//bool comp(MovieKey, MovieKey) const;
 
-		void write(std::ostream& os);
+		void read(std::istream& is);
 
+		void write(std::ostream& os);
 	private:
 
 		std::vector<MovieKey> vec;

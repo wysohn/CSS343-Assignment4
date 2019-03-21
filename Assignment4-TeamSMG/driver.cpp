@@ -102,8 +102,8 @@ public:
 		}
 	}
 
-	TempHashable clone() const {
-		return TempHashable(*this);
+	TempHashable* clone() const {
+		return new TempHashable(*this);
 	}
 };
 
@@ -434,6 +434,7 @@ int main() {
 			file_commands >> movieType;
 			file_commands.getline(buffer, 256);
 			data = std::string(buffer);
+
 
 
 			break;
