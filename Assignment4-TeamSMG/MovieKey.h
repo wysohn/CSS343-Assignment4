@@ -45,8 +45,6 @@ public:
 	
 	virtual std::string name() const;
 
-	virtual void print(std::ostream& os) const;
-
-	friend std::ostream& operator<<(std::ostream& out, const MovieKey& key);
+	virtual void print(std::ostream& os, int stock) const;
 };
 

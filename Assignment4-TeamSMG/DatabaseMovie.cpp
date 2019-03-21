@@ -266,6 +266,10 @@ void DatabaseMovie::write(std::ostream& os)
 {
 	for(std::vector<MovieKey>::size_type i = 0; i != vec.size(); i++)
 	{
-		os << (i+1) << ". " << *vec[i].get() << std::endl;
+		MovieKey* key = vec[i].get();
+		int* stock = this->get(*key);
+		os << (i + 1) << ". ";
+		key->print(os, stock == NULL ? -1 : *stock);
+		os << std::endl;
 	}
 }

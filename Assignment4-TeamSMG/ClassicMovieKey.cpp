@@ -46,7 +46,7 @@ std::string ClassicMovieKey::name() const
 	return "Classic";
 }
 
-void ClassicMovieKey::print(std::ostream& out) const
+void ClassicMovieKey::print(std::ostream& out, int stock) const
 {
-	out << "C, " << " [insert stock], " << director << ", " << title << ", " << actor << ", " << year <<  std::endl;
+	out << "C, " << stock << ", " << director << ", " << title << ", " << actor << " " << month << " " << year;
 }

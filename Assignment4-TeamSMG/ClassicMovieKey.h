@@ -17,5 +17,5 @@ public:
 
 	std::string name() const;
 
-	void print(std::ostream& out) const;
+	void print(std::ostream& out, int stock) const;
 };

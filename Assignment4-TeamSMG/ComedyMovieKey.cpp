@@ -37,7 +37,7 @@ std::string ComedyMovieKey::name() const
 	return "Comedy";
 }
 
-void ComedyMovieKey::print(std::ostream& out) const
+void ComedyMovieKey::print(std::ostream& out, int stock) const
 {
-	out << "F, " << " [insert stock], " << director << ", " << title << ", " << year << std::endl;
+	out << "F, " << stock << ", " << director << ", " << title << ", " << year;
 }

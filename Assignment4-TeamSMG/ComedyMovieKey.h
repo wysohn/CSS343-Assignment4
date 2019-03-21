@@ -10,6 +10,6 @@ public:
 
 	int compareTo(const Comparable* other) const;
 
-	void print(std::ostream& out) const;
+	void print(std::ostream& out, int stock) const;
 };
 
