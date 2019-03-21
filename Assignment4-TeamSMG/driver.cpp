@@ -4,7 +4,7 @@
 /*
 Uncomment this to perform test
 */
-#define TEST
+//#define TEST
 
 #ifdef TEST
 
@@ -100,6 +100,10 @@ public:
 		else {
 			return false;
 		}
+	}
+
+	TempHashable clone() const {
+		return TempHashable(*this);
 	}
 };
 
@@ -418,6 +422,9 @@ int main() {
 	char mediaType = 0;
 	char movieType = 0;
 	std::string data;
+
+	CustomerKey* key;
+
 	while (file_commands) {
 		file_commands >> actionType;
 		switch (actionType) {
@@ -444,12 +451,15 @@ int main() {
 			break;
 		case 'H'://history (customerID)
 			file_commands >> customerId;
-			//CustomerKey key(customerId);
-			//database_transactions.showTransactions(std::cout, &key);
+
+			key = new CustomerKey(customerId);
+			database_transactions.showTransactions(std::cout, *key);
+			delete key;
+			
 			break;
 		default:
 			std::cout << "Unknown Command " << actionType << " !" << std::endl;
-			continue;
+			break;
 		}
 	}
 	
