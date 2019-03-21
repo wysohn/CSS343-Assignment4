@@ -459,6 +459,8 @@ int main() {
 			break;
 		default:
 			std::cout << "Unknown Command " << actionType << " !" << std::endl;
+			//consume rest of the line
+			file_commands.getline(buffer, 256);
 			break;
 		}
 	}
