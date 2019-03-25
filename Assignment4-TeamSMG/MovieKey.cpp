@@ -7,7 +7,7 @@ MovieKey::MovieKey(std::string title, int year, std::string director)
 
 int MovieKey::hashCode() const
 {
-	return hashString(title) + 31 * year + hashString(director);
+	return hashString(title);
 }
 
 bool MovieKey::equals(const Hashable * other) const
@@ -16,10 +16,6 @@ bool MovieKey::equals(const Hashable * other) const
 	if (const MovieKey* key = dynamic_cast<const MovieKey*>(other)) {
 		//compare each fields
 		if (this->title != key->title)
-			return false;
-		if (this->year != key->year)
-			return false;
-		if (this->director != key->director)
 			return false;
 
 		//they are same only if every fields are the same

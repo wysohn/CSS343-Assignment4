@@ -1,11 +1,13 @@
 #pragma once
 
+#include <iostream>
+
 #include "MovieKey.h"
 
 class DramaMovieKey : public MovieKey
 {
 public:
-	DramaMovieKey(std::string title, int year, std::string director);
+	DramaMovieKey(std::string title, int year = 0, std::string director = "");
 
 	/*
 	-dramas (¡®D¡¯) are sorted by Director, then Title 

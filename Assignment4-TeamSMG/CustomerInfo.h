@@ -1,9 +1,10 @@
 #pragma once
 
 #include <string>
+#include <iostream>
 
-#include "map.h"
-#include "comparable.h"
+#include "Map.h"
+#include "Comparable.h"
 
 class CustomerInfo{
     

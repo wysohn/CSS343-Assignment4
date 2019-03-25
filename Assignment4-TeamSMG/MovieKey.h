@@ -2,8 +2,8 @@
 
 #include <string>
 
-#include "map.h"
-#include "comparable.h"
+#include "Map.h"
+#include "Comparable.h"
 
 class MovieKey : public Hashable, public Comparable 
 {
@@ -13,7 +13,7 @@ protected:
 	std::string director;
 
 public:
-	MovieKey(std::string title, int year, std::string director);
+	MovieKey(std::string title, int year, std::string director = "");
 
 	/*
 	Generate hash value based on title, year, and director.

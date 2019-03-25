@@ -1,8 +1,8 @@
 #pragma once
 
 #include <string>
-#include "map.h"
-#include "comparable.h"
+#include "Map.h"
+#include "Comparable.h"
 
 class CustomerKey : public Hashable, public Comparable{    
 

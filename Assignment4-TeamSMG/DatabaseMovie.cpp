@@ -1,3 +1,5 @@
+#define _CRT_SECURE_NO_WARNINGS
+
 #include "DatabaseMovie.h"
 
 #include <sstream>
@@ -200,18 +202,17 @@ void DatabaseMovie::read(std::istream & is)
 		std::string tokens[5];
 		
 		int i = 0;
-		char* nextToken;
-		char* pch = strtok_s(buffer, ",", &nextToken);
+		char* pch = strtok(buffer, ",");
 		while (pch != NULL)
 		{
 			tokens[i++] = std::string(pch);
-			pch = strtok_s(NULL, ",", &nextToken);
+			pch = strtok(NULL, ",");
 		}
 
 		if (tokens[0] == "F" || tokens[0]== "D") {
 			int stock = stoi(tokens[1]);
-			std::string director = tokens[2];
-			std::string title = tokens[3];
+			std::string director = tokens[2].substr(1, tokens[2].length());
+			std::string title = tokens[3].substr(1, tokens[3].length());
 			int year = stoi(tokens[4]);
 
 			if (tokens[0] == "F") {
@@ -235,8 +236,8 @@ void DatabaseMovie::read(std::istream & is)
 		}
 		else if (tokens[0] == "C") {
 			int stock = stoi(tokens[1]);
-			std::string director = tokens[2];
-			std::string title = tokens[3];
+			std::string director = tokens[2].substr(1, tokens[2].length());
+			std::string title = tokens[3].substr(1, tokens[3].length());
 			std::string actor_month_year = tokens[4];
 
 			std::istringstream iss(actor_month_year);

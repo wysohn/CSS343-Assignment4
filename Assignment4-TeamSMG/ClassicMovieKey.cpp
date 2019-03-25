@@ -12,6 +12,34 @@ ClassicMovieKey::ClassicMovieKey(std::string title, int year, std::string direct
 {
 }
 
+int ClassicMovieKey::hashCode() const
+{
+	return 31 * month + 31 * year + hashString(actor);
+}
+
+bool ClassicMovieKey::equals(const Hashable * other) const
+{
+	//try to cast it to MovieKey*
+	if (const ClassicMovieKey* key = dynamic_cast<const ClassicMovieKey*>(other)) {
+		//compare each fields
+		if (this->month != key->month)
+			return false;
+		if (this->year != key->year)
+			return false;
+		if (this->actor != key->actor)
+			return false;
+
+		//they are same only if every fields are the same
+		return true;
+	}
+	//if cannot be casted, they are certainly not equal
+	else {
+		return false;
+	}
+}
+
+
+
 int ClassicMovieKey::compareTo(const Comparable * other) const
 {
 	if (const ClassicMovieKey* key = dynamic_cast<const ClassicMovieKey*>(other)) {

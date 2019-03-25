@@ -1,4 +1,7 @@
 #pragma once
+
+#include <iostream>
+
 #include "MovieKey.h"
 
 class ClassicMovieKey :
@@ -10,6 +13,10 @@ private:
 
 public:
 	ClassicMovieKey(std::string title, int year, std::string director, std::string actor, int month);
+
+	int hashCode() const;
+
+	bool equals(const Hashable* other) const;
 
 	int compareTo(const Comparable* other) const;
 

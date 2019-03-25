@@ -112,7 +112,7 @@ public:
 };
 
 template<class K, class T>
-inline void Map<K, T>::rehash()
+void Map<K, T>::rehash()
 {
 	//temporarily store previous data
 	Pair** temp = this->buckets;
@@ -138,7 +138,7 @@ inline void Map<K, T>::rehash()
 }
 
 template<class K, class T>
-inline void Map<K, T>::clear(Pair** bucket, int size)
+void Map<K, T>::clear(Pair** bucket, int size)
 {
 	//delete each bucket
 	for (int i = 0; i < size; i++) {
@@ -154,7 +154,7 @@ inline void Map<K, T>::clear(Pair** bucket, int size)
 }
 
 template<class K, class T>
-inline typename Map<K, T>::Pair* Map<K, T>::find_pair(const K& key) const
+typename Map<K, T>::Pair* Map<K, T>::find_pair(const K& key) const
 {
 	int hash = modulo(key.hashCode(), this->max_size);
 

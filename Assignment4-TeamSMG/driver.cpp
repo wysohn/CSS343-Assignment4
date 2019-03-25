@@ -1,5 +1,8 @@
+#define _CRT_SECURE_NO_WARNINGS
+
 #include <iostream>
 #include <fstream>
+#include <cstring>
 
 /*
 Uncomment this to perform test
@@ -379,8 +382,55 @@ int main() {
 #include "DatabaseCustomer.h"
 #include "DatabaseTransaction.h"
 
-void inventory() {
+MovieKey* movieKeyFromData(char type, std::string data) {
+	MovieKey* key = NULL;
 
+	int i = 0;
+
+	char *cstr = new char[data.length() + 1];
+	strcpy(cstr, data.c_str());
+
+	// title, year
+	if (type == 'F') {
+		std::string tokens[2];
+		char* pch = strtok(cstr, ",");
+		while (pch != NULL && i < 2)
+		{
+			tokens[i++] = std::string(pch);
+			pch = strtok(NULL, ",");
+		}
+
+		key = new ComedyMovieKey(tokens[0]);
+	}
+
+	// director, title
+	else if (type == 'D') {
+		std::string tokens[2];
+		char* pch = strtok(cstr, ",");
+		while (pch != NULL && i < 2)
+		{
+			tokens[i++] = std::string(pch);
+			pch = strtok(NULL, ",");
+		}
+
+		key = new DramaMovieKey(tokens[1].substr(1, tokens[1].length()));
+	}
+
+	// month year name1 name2
+	else if (type == 'C') {
+		std::string tokens[4];
+		char* pch = strtok(cstr, " ");
+		while (pch != NULL && i < 4)
+		{
+			tokens[i++] = std::string(pch);
+			pch = strtok(NULL, " ");
+		}
+
+		key = new ClassicMovieKey("", stoi(tokens[1]), "", tokens[2] + " " + tokens[3], stoi(tokens[0]));
+	}
+
+	delete[] cstr;
+	return key;
 }
 
 int main() {
@@ -423,10 +473,17 @@ int main() {
 	char movieType = 0;
 	std::string data;
 
-	CustomerKey* key;
+	MovieKey* movieKey = NULL;
+	CustomerKey* customerKey = NULL;
+	int* stock = NULL;
+	std::queue<std::string>* queue = NULL;
+
+	int newStock = -1;
 
 	while (file_commands) {
-		file_commands >> actionType;
+		if (!(file_commands >> actionType))
+			break;
+
 		switch (actionType) {
 		case 'B'://borrow (customerID, media type, movie type, move data)
 			file_commands >> customerId;
@@ -434,8 +491,37 @@ int main() {
 			file_commands >> movieType;
 			file_commands.getline(buffer, 256);
 			data = std::string(buffer);
+			data = data.substr(1, data.length());
 
+			//only DVD is supported for now
+			if (mediaType != 'D') {
+				break;
+			}
 
+			movieKey = movieKeyFromData(movieType, data);
+			//unknown movieType
+			if (movieKey == NULL) {
+				break;
+			}
+			stock = database_movies.get(*movieKey);
+			if (stock == NULL || *stock < 1) {
+				break;
+			}
+			newStock = *stock - 1;
+			database_movies.put(*movieKey, newStock);
+			delete movieKey;
+
+			customerKey = new CustomerKey(customerId);
+			queue = database_transactions.get(*customerKey);
+			if (queue == NULL) {
+				std::queue<std::string> newQueue;
+				newQueue.push("Borrowed " + std::string(1, mediaType) + " " + std::string(1, movieType) + " " + data);
+				database_transactions.put(*customerKey, newQueue);
+			}
+			else {
+				queue->push("Borrowed " + std::string(1, mediaType) + " " + std::string(1, movieType) + " " + data);
+			}
+			delete customerKey;
 
 			break;
 		case 'R'://return (customerID, media type, movie type, move data)
@@ -444,8 +530,37 @@ int main() {
 			file_commands >> movieType;
 			file_commands.getline(buffer, 256);
 			data = std::string(buffer);
+			data = data.substr(1, data.length());
 
+			//only DVD is supported for now
+			if (mediaType != 'D') {
+				break;
+			}
 
+			movieKey = movieKeyFromData(movieType, data);
+			//unknown movieType
+			if (movieKey == NULL) {
+				break;
+			}
+			stock = database_movies.get(*movieKey);
+			if (stock == NULL) {
+				break;
+			}
+			newStock = *stock + 1;
+			database_movies.put(*movieKey, newStock);
+			delete movieKey;
+
+			customerKey = new CustomerKey(customerId);
+			queue = database_transactions.get(*customerKey);
+			if (queue == NULL) {
+				std::queue<std::string> newQueue;
+				newQueue.push("Returned " + std::string(1, mediaType) + " " + std::string(1, movieType) + " " + data);
+				database_transactions.put(*customerKey, newQueue);
+			}
+			else {
+				queue->push("Returned " + std::string(1, mediaType) + " " + std::string(1, movieType) + " " + data);
+			}
+			delete customerKey;
 			break;
 		case 'I'://inventory ()
 			std::cout << database_movies;
@@ -453,9 +568,11 @@ int main() {
 		case 'H'://history (customerID)
 			file_commands >> customerId;
 
-			key = new CustomerKey(customerId);
-			database_transactions.showTransactions(std::cout, *key);
-			delete key;
+			customerKey = new CustomerKey(customerId);
+			std::cout << "---- History of " << customerId << " ----" << std::endl;
+			database_transactions.showTransactions(std::cout, *customerKey);
+			std::cout << "---- End ----" << std::endl;
+			delete customerKey;
 			
 			break;
 		default:

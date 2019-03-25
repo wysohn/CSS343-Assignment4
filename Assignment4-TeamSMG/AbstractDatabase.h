@@ -2,7 +2,7 @@
 
 #include <iostream>
 
-#include "map.h"
+#include "Map.h"
 
 /*
 Abstract class which represent Database.
@@ -31,8 +31,8 @@ protected:
 	Map<K, T> data;
 
 public:
-	T* get(typename K & key);
-	T* put(typename K & key, T & val);
+	T* get(K & key);
+	T* put(K & key, T & val);
 
 	/*
 	Virtual method which will be used to read data from istream.
@@ -48,25 +48,25 @@ public:
 };
 
 template<class K, class T>
-inline T * AbstractDatabase<K, T>::get(typename K & key)
+T * AbstractDatabase<K, T>::get(K & key)
 {
 	return data.get(key);
 }
 
 template<class K, class T>
-inline T * AbstractDatabase<K, T>::put(typename K & key, T & val)
+T * AbstractDatabase<K, T>::put(K & key, T & val)
 {
 	return data.put(key, val);
 }
 
 template<class K, class T>
-inline void AbstractDatabase<K, T>::read(std::istream & is)
+void AbstractDatabase<K, T>::read(std::istream & is)
 {
 	//do nothing if not overrided
 }
 
 template<class K, class T>
-inline void AbstractDatabase<K, T>::write(std::ostream & os)
+void AbstractDatabase<K, T>::write(std::ostream & os)
 {
 	//do nothing if not overrided
 }
